@@ -14,6 +14,9 @@ defmodule Whois.Record do
                          updated_at: date,
                          expires_at: date}
 
+  @doc """
+  Parses the raw WHOIS server response in `raw` into a `%Whois.Record{}`.
+  """
   @spec parse(String.t) :: t
   def parse(raw) do
     record = %Whois.Record{raw: raw, nameservers: []}

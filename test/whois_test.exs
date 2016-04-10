@@ -11,6 +11,7 @@ defmodule WhoisTest do
                                              "NS2.GOOGLE.COM",
                                              "NS3.GOOGLE.COM",
                                              "NS4.GOOGLE.COM"]
+    assert record.registrar == "MARKMONITOR INC."
     assert raw =~ "Domain Name: GOOGLE.COM"
     assert raw =~ "Registrar: MARKMONITOR INC."
     assert raw =~ "Name Server: NS1.GOOGLE.COM"
@@ -24,6 +25,7 @@ defmodule WhoisTest do
                                              "NS2.GOOGLE.COM",
                                              "NS3.GOOGLE.COM",
                                              "NS4.GOOGLE.COM"]
+    assert record.registrar == "MARKMONITOR INC."
     assert raw =~ "Domain Name: GOOGLE.NET"
     assert raw =~ "Registrar: MARKMONITOR INC."
     assert raw =~ "Name Server: NS1.GOOGLE.COM"
@@ -37,6 +39,7 @@ defmodule WhoisTest do
                                              "NS2.GOOGLE.COM",
                                              "NS3.GOOGLE.COM",
                                              "NS4.GOOGLE.COM"]
+    assert record.registrar == "MarkMonitor Inc."
     assert raw =~ "Domain Name: GOOGLE.ORG"
     assert raw =~ "Sponsoring Registrar: MarkMonitor Inc."
     assert raw =~ "Name Server: NS1.GOOGLE.COM"

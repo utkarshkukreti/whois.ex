@@ -13,6 +13,14 @@ defmodule Whois.Record do
                 ["Name Server: " <> ns | rest]) do
     do_parse(%{record | nameservers: nameservers ++ [ns]}, rest)
   end
+  defp do_parse(%Whois.Record{} = record,
+                ["Registrar: " <> registrar | rest]) do
+    do_parse(%{record | registrar: registrar}, rest)
+  end
+  defp do_parse(%Whois.Record{} = record,
+                ["Sponsoring Registrar: " <> registrar | rest]) do
+    do_parse(%{record | registrar: registrar}, rest)
+  end
   defp do_parse(%Whois.Record{} = record, [_ | rest]) do
     do_parse(record, rest)
   end

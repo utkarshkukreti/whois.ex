@@ -1,0 +1,2 @@
+defmodule Whois do
+end

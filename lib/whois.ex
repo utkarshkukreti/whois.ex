@@ -7,6 +7,7 @@ defmodule Whois do
     "org" => %Server{host: 'whois.pir.org'}
   }
 
+  @spec lookup(String.t) :: {:ok, Record.t} | {:error, atom}
   def lookup(domain) do
     [_, tld] = String.split(domain, ".", parts: 2)
     %Server{host: host, prefix: prefix} = Map.fetch!(@servers, tld)

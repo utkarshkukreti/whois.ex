@@ -2,6 +2,19 @@ defmodule Whois.Record do
   defstruct [:domain, :raw, :nameservers, :registrar,
              :created_at, :updated_at, :expires_at]
 
+  @type date :: %{day: integer,
+                  month: integer,
+                  year: integer}
+
+  @type t :: %__MODULE__{domain: String.t,
+                         raw: String.t,
+                         nameservers: [String.t],
+                         registrar: String.t,
+                         created_at: date,
+                         updated_at: date,
+                         expires_at: date}
+
+  @spec parse(String.t) :: t
   def parse(raw) do
     record = %Whois.Record{raw: raw, nameservers: []}
     Enum.reduce(String.split(raw, "\n"), record, fn line, record ->

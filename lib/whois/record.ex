@@ -2,26 +2,18 @@ defmodule Whois.Record do
   defstruct [:domain, :raw, :nameservers, :registrar]
 
   def parse(domain, raw) do
-    do_parse(%Whois.Record{domain: domain, raw: raw, nameservers: []},
-             raw |> String.split("\n") |> Enum.map(&String.strip/1))
-  end
-
-  defp do_parse(%Whois.Record{} = record, []) do
-    record
-  end
-  defp do_parse(%Whois.Record{nameservers: nameservers} = record,
-                ["Name Server: " <> ns | rest]) do
-    do_parse(%{record | nameservers: nameservers ++ [ns]}, rest)
-  end
-  defp do_parse(%Whois.Record{} = record,
-                ["Registrar: " <> registrar | rest]) do
-    do_parse(%{record | registrar: registrar}, rest)
-  end
-  defp do_parse(%Whois.Record{} = record,
-                ["Sponsoring Registrar: " <> registrar | rest]) do
-    do_parse(%{record | registrar: registrar}, rest)
-  end
-  defp do_parse(%Whois.Record{} = record, [_ | rest]) do
-    do_parse(record, rest)
+    record = %Whois.Record{domain: domain, raw: raw, nameservers: []}
+    Enum.reduce(String.split(raw, "\n"), record, fn line, record ->
+      case String.strip(line) do
+        "Name Server: " <> nameserver ->
+          %{record | nameservers: record.nameservers ++ [nameserver]}
+        "Registrar: " <> registrar ->
+          %{record | registrar: registrar}
+        "Sponsoring Registrar: " <> registrar ->
+          %{record | registrar: registrar}
+        _ ->
+          record
+      end
+    end)
   end
 end

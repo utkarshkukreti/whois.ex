@@ -6,7 +6,11 @@ defmodule WhoisTest do
 
   test "lookup(\"google.com\")" do
     assert {:ok, %Record{domain: "google.com",
-                         raw: raw}} = Whois.lookup("google.com")
+                         raw: raw} = record} = Whois.lookup("google.com")
+    assert Enum.sort(record.nameservers) == ["NS1.GOOGLE.COM",
+                                             "NS2.GOOGLE.COM",
+                                             "NS3.GOOGLE.COM",
+                                             "NS4.GOOGLE.COM"]
     assert raw =~ "Domain Name: GOOGLE.COM"
     assert raw =~ "Registrar: MARKMONITOR INC."
     assert raw =~ "Name Server: NS1.GOOGLE.COM"
@@ -15,7 +19,11 @@ defmodule WhoisTest do
 
   test "lookup(\"google.net\")" do
     assert {:ok, %Record{domain: "google.net",
-                         raw: raw}} = Whois.lookup("google.net")
+                         raw: raw} = record} = Whois.lookup("google.net")
+    assert Enum.sort(record.nameservers) == ["NS1.GOOGLE.COM",
+                                             "NS2.GOOGLE.COM",
+                                             "NS3.GOOGLE.COM",
+                                             "NS4.GOOGLE.COM"]
     assert raw =~ "Domain Name: GOOGLE.NET"
     assert raw =~ "Registrar: MARKMONITOR INC."
     assert raw =~ "Name Server: NS1.GOOGLE.COM"
@@ -24,7 +32,11 @@ defmodule WhoisTest do
 
   test "lookup(\"google.org\")" do
     assert {:ok, %Record{domain: "google.org",
-                         raw: raw}} = Whois.lookup("google.org")
+                         raw: raw} = record} = Whois.lookup("google.org")
+    assert Enum.sort(record.nameservers) == ["NS1.GOOGLE.COM",
+                                             "NS2.GOOGLE.COM",
+                                             "NS3.GOOGLE.COM",
+                                             "NS4.GOOGLE.COM"]
     assert raw =~ "Domain Name: GOOGLE.ORG"
     assert raw =~ "Sponsoring Registrar: MarkMonitor Inc."
     assert raw =~ "Name Server: NS1.GOOGLE.COM"

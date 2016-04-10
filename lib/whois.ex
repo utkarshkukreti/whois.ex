@@ -7,6 +7,11 @@ defmodule Whois do
     "org" => %Server{host: 'whois.pir.org'}
   }
 
+  @doc """
+  Queries the appropriate WHOIS server for the domain name `domain` and returns
+  a `{:ok, %Whois.Record{}}` tuple on success, and `{:error, reason}` on
+  failure.
+  """
   @spec lookup(String.t) :: {:ok, Record.t} | {:error, atom}
   def lookup(domain) do
     [_, tld] = String.split(domain, ".", parts: 2)

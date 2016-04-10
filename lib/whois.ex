@@ -1,5 +1,5 @@
 defmodule Whois do
-  alias Whois.Server
+  alias Whois.{Record, Server}
 
   @servers %{
     "com" => %Server{host: 'whois.verisign-grs.com', prefix: "="},
@@ -12,7 +12,7 @@ defmodule Whois do
     %Server{host: host, prefix: prefix} = Map.fetch!(@servers, tld)
     with {:ok, socket} <- :gen_tcp.connect(host, 43, [:binary, active: false]),
          :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n"),
-         do: {:ok, recv(socket)}
+         do: {:ok, Record.parse(domain, recv(socket))}
   end
 
   defp recv(socket, acc \\ "") do

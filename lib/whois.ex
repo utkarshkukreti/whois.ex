@@ -12,7 +12,7 @@ defmodule Whois do
     %Server{host: host, prefix: prefix} = Map.fetch!(@servers, tld)
     with {:ok, socket} <- :gen_tcp.connect(host, 43, [:binary, active: false]),
          :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n"),
-         do: {:ok, Record.parse(domain, recv(socket))}
+         do: {:ok, Record.parse(recv(socket))}
   end
 
   defp recv(socket, acc \\ "") do

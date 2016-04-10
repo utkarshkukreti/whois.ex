@@ -5,7 +5,7 @@ defmodule WhoisTest do
 
 
   test "lookup(\"google.com\")" do
-    assert {:ok, %Record{domain: "google.com",
+    assert {:ok, %Record{domain: "GOOGLE.COM",
                          raw: raw} = record} = Whois.lookup("google.com")
     assert Enum.sort(record.nameservers) == ["NS1.GOOGLE.COM",
                                              "NS2.GOOGLE.COM",
@@ -22,7 +22,7 @@ defmodule WhoisTest do
   end
 
   test "lookup(\"google.net\")" do
-    assert {:ok, %Record{domain: "google.net",
+    assert {:ok, %Record{domain: "GOOGLE.NET",
                          raw: raw} = record} = Whois.lookup("google.net")
     assert Enum.sort(record.nameservers) == ["NS1.GOOGLE.COM",
                                              "NS2.GOOGLE.COM",
@@ -39,7 +39,7 @@ defmodule WhoisTest do
   end
 
   test "lookup(\"google.org\")" do
-    assert {:ok, %Record{domain: "google.org",
+    assert {:ok, %Record{domain: "GOOGLE.ORG",
                          raw: raw} = record} = Whois.lookup("google.org")
     assert Enum.sort(record.nameservers) == ["NS1.GOOGLE.COM",
                                              "NS2.GOOGLE.COM",

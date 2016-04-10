@@ -1,15 +1,15 @@
 defmodule Whois do
+  alias Whois.Server
+
   @servers %{
-    "com" => %{host: 'whois.verisign-grs.com', prefix: "="},
-    "net" => %{host: 'whois.verisign-grs.com'},
-    "org" => %{host: 'whois.pir.org'}
+    "com" => %Server{host: 'whois.verisign-grs.com', prefix: "="},
+    "net" => %Server{host: 'whois.verisign-grs.com'},
+    "org" => %Server{host: 'whois.pir.org'}
   }
 
   def lookup(domain) do
     [_, tld] = String.split(domain, ".", parts: 2)
-    server = Map.fetch!(@servers, tld)
-    host = server[:host]
-    prefix = server[:prefix] || ""
+    %Server{host: host, prefix: prefix} = Map.fetch!(@servers, tld)
     with {:ok, socket} <- :gen_tcp.connect(host, 43, [:binary, active: false]),
          :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n"),
          do: {:ok, recv(socket)}

@@ -1,5 +1,5 @@
 defmodule Whois.Record do
-  defstruct [:domain, :raw, :nameservers]
+  defstruct [:domain, :raw, :nameservers, :registrar]
 
   def parse(domain, raw) do
     do_parse(%Whois.Record{domain: domain, raw: raw, nameservers: []},

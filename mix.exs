@@ -7,7 +7,9 @@ defmodule Whois.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps,
+     description: "Pure Elixir WHOIS client and parser.",
+     package: package]
   end
 
   # Configuration for the OTP application
@@ -28,5 +30,11 @@ defmodule Whois.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     []
+  end
+
+  defp package do
+    [maintainers: ["Utkarsh Kukreti"],
+     licenses: ["MIT"],
+     links: %{"GitHub": "https://github.com/utkarshkukreti/whois.ex"}]
   end
 end

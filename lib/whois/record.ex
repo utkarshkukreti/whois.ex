@@ -1,5 +1,6 @@
 defmodule Whois.Record do
-  defstruct [:domain, :raw, :nameservers, :registrar]
+  defstruct [:domain, :raw, :nameservers, :registrar,
+             :created_at, :updated_at, :expires_at]
 
   def parse(domain, raw) do
     record = %Whois.Record{domain: domain, raw: raw, nameservers: []}

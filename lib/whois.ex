@@ -1,12 +1,6 @@
 defmodule Whois do
   alias Whois.{Record, Server}
 
-  @servers %{
-    "com" => %Server{host: 'whois.verisign-grs.com', prefix: "="},
-    "net" => %Server{host: 'whois.verisign-grs.com'},
-    "org" => %Server{host: 'whois.pir.org'}
-  }
-
   @doc """
   Queries the appropriate WHOIS server for the domain name `domain` and returns
   a `{:ok, %Whois.Record{}}` tuple on success, and `{:error, reason}` on
@@ -14,11 +8,13 @@ defmodule Whois do
   """
   @spec lookup(String.t) :: {:ok, Record.t} | {:error, atom}
   def lookup(domain) do
-    [_, tld] = String.split(domain, ".", parts: 2)
-    %Server{host: host, prefix: prefix} = Map.fetch!(@servers, tld)
-    with {:ok, socket} <- :gen_tcp.connect(host, 43, [:binary, active: false]),
-         :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n"),
-         do: {:ok, Record.parse(recv(socket))}
+    case Server.for(domain) do
+      {:ok, %Server{host: host, prefix: prefix}} ->
+        with {:ok, socket} <- :gen_tcp.connect(host, 43, [:binary, active: false]),
+             :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n"),
+             do: {:ok, Record.parse(recv(socket))}
+      :error -> {:error, :unsupported}
+    end
   end
 
   defp recv(socket, acc \\ "") do

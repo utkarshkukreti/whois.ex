@@ -68,3 +68,12 @@ defmodule Whois.Record do
     end
   end
 end
+
+defimpl Inspect, for: Whois.Record do
+  def inspect(%Whois.Record{} = record, opts) do
+    record
+    |> Map.put(:raw, "…")
+    |> Map.delete(:__struct__)
+    |> Inspect.Map.inspect("Whois.Record", opts)
+  end
+end

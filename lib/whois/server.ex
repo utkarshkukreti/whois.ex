@@ -3,15 +3,15 @@ defmodule Whois.Server do
 
   defstruct [:host, :prefix]
 
-  @type t :: %__MODULE__{host: char_list,
+  @type t :: %__MODULE__{host: String.t,
                          prefix: String.t}
 
   @spec all :: map
   def all do
     %{
-      "com" => %Server{host: 'whois.verisign-grs.com', prefix: "="},
-      "net" => %Server{host: 'whois.verisign-grs.com'},
-      "org" => %Server{host: 'whois.pir.org'}
+      "com" => %Server{host: "whois.verisign-grs.com", prefix: "="},
+      "net" => %Server{host: "whois.verisign-grs.com"},
+      "org" => %Server{host: "whois.pir.org"}
     }
   end
 

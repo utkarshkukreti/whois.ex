@@ -10,7 +10,9 @@ defmodule Whois do
   def lookup(domain) do
     case Server.for(domain) do
       {:ok, %Server{host: host, prefix: prefix}} ->
-        with {:ok, socket} <- :gen_tcp.connect(host, 43, [:binary, active: false]),
+        with {:ok, socket} <- :gen_tcp.connect(String.to_char_list(host),
+                                               43,
+                                               [:binary, active: false]),
              :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n"),
              do: {:ok, Record.parse(recv(socket))}
       :error -> {:error, :unsupported}

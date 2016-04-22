@@ -7,6 +7,7 @@ defmodule Whois.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     elixirc_paths: elixirc_paths(Mix.env),
      deps: deps,
      description: "Pure Elixir WHOIS client and parser.",
      package: package]
@@ -18,6 +19,9 @@ defmodule Whois.Mixfile do
   def application do
     [applications: [:logger]]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   # Dependencies can be Hex packages:
   #

@@ -4,7 +4,7 @@ defmodule WhoisTest do
 
   test "lookup/1" do
     assert {:ok, record} = Whois.lookup("google.com")
-    assert record.domain == "GOOGLE.COM"
+    assert record.domain == "google.com"
   end
 
   test "lookup/2 with custom :server" do

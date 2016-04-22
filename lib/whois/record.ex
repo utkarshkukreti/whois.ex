@@ -20,7 +20,7 @@ defmodule Whois.Record do
   @spec parse(String.t) :: t
   def parse(raw) do
     record = %Whois.Record{raw: raw, nameservers: []}
-    Enum.reduce(String.split(raw, "\n"), record, fn line, record ->
+    record = Enum.reduce(String.split(raw, "\n"), record, fn line, record ->
       case String.strip(line) do
         "Domain Name: " <> domain ->
           %{record | domain: domain}
@@ -31,17 +31,22 @@ defmodule Whois.Record do
         "Sponsoring Registrar: " <> registrar ->
           %{record | registrar: registrar}
         "Creation Date: " <> created_at ->
-          %{record | created_at: parse_date(created_at)}
+          %{record | created_at: parse_date(created_at) || record.created_at}
         "Updated Date: " <> updated_at ->
-          %{record | updated_at: parse_date(updated_at)}
+          %{record | updated_at: parse_date(updated_at) || record.updated_at}
         "Expiration Date: " <> expires_at ->
-          %{record | expires_at: parse_date(expires_at)}
+          %{record | expires_at: parse_date(expires_at) || record.expires_at}
         "Registry Expiry Date: " <> expires_at ->
-          %{record | expires_at: parse_date(expires_at)}
+          %{record | expires_at: parse_date(expires_at) || record.expires_at}
         _ ->
           record
       end
     end)
+    nameservers =
+      record.nameservers
+      |> Enum.map(&String.downcase/1)
+      |> Enum.uniq
+    %{record | nameservers: nameservers}
   end
 
   defp parse_date(string) do

@@ -5,7 +5,7 @@ defmodule WhoisTest do
   @tag :live
   test "lookup/1" do
     assert {:ok, record} = Whois.lookup("google.com")
-    assert record.domain == "GOOGLE.COM"
+    assert record.domain == "google.com"
   end
 
   @tag :live

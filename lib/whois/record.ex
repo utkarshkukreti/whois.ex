@@ -21,7 +21,7 @@ defmodule Whois.Record do
   def parse(raw) do
     record = %Whois.Record{raw: raw, nameservers: []}
     record = Enum.reduce(String.split(raw, "\n"), record, fn line, record ->
-      case String.strip(line) do
+      case String.trim(line) do
         "Domain Name: " <> domain ->
           %{record | domain: domain}
         "Name Server: " <> nameserver ->

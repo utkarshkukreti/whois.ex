@@ -8,9 +8,9 @@ defmodule Whois.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      elixirc_paths: elixirc_paths(Mix.env),
-     deps: deps,
+     deps: deps(),
      description: "Pure Elixir WHOIS client and parser.",
-     package: package]
+     package: package()]
   end
 
   # Configuration for the OTP application

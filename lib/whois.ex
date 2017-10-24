@@ -23,7 +23,7 @@ defmodule Whois do
              end
     case server do
       {:ok, %Server{host: host, prefix: prefix}} ->
-        with {:ok, socket} <- :gen_tcp.connect(String.to_char_list(host),
+        with {:ok, socket} <- :gen_tcp.connect(String.to_charlist(host),
                                                43,
                                                [:binary, active: false]),
              :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n") do
@@ -52,7 +52,7 @@ defmodule Whois do
     raw
     |> String.split("\n")
     |> Enum.find_value(fn line ->
-      case String.strip(line) do
+      case String.trim(line) do
         "Whois Server: " <> host -> host
         _ -> nil
       end

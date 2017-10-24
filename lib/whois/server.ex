@@ -18,6 +18,6 @@ defmodule Whois.Server do
   @spec for(String.t) :: {:ok, t} | :error
   def for(domain) do
     [_, tld] = String.split(domain, ".", parts: 2)
-    Map.fetch(all, tld)
+    Map.fetch(all(), tld)
   end
 end

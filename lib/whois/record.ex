@@ -6,9 +6,9 @@ defmodule Whois.Record do
                          raw: String.t,
                          nameservers: [String.t],
                          registrar: String.t,
-                         created_at: Date.t,
-                         updated_at: Date.t,
-                         expires_at: Date.t}
+                         created_at: NaiveDateTime.t,
+                         updated_at: NaiveDateTime.t,
+                         expires_at: NaiveDateTime.t}
 
   @doc """
   Parses the raw WHOIS server response in `raw` into a `%Whois.Record{}`.
@@ -27,13 +27,13 @@ defmodule Whois.Record do
         "Sponsoring Registrar: " <> registrar ->
           %{record | registrar: registrar}
         "Creation Date: " <> created_at ->
-          %{record | created_at: parse_date(created_at) || record.created_at}
+          %{record | created_at: parse_dt(created_at) || record.created_at}
         "Updated Date: " <> updated_at ->
-          %{record | updated_at: parse_date(updated_at) || record.updated_at}
+          %{record | updated_at: parse_dt(updated_at) || record.updated_at}
         "Expiration Date: " <> expires_at ->
-          %{record | expires_at: parse_date(expires_at) || record.expires_at}
+          %{record | expires_at: parse_dt(expires_at) || record.expires_at}
         "Registry Expiry Date: " <> expires_at ->
-          %{record | expires_at: parse_date(expires_at) || record.expires_at}
+          %{record | expires_at: parse_dt(expires_at) || record.expires_at}
         _ ->
           record
       end
@@ -45,29 +45,10 @@ defmodule Whois.Record do
     %{record | nameservers: nameservers}
   end
 
-  defp parse_date(string) do
-    case Regex.run(~r/^(\d{2})-([a-zA-Z]{3})-(\d{4})$/, string) do
-      [_, day, month, year] ->
-        day = String.to_integer(day)
-        month = case month do
-                  "jan" -> 1; "feb" -> 2; "mar" -> 3; "apr" -> 4
-                  "may" -> 5; "jun" -> 6; "jul" -> 7; "aug" -> 8
-                  "sep" -> 9; "oct" -> 10; "nov" -> 11; "dec" -> 12
-                end
-        year = String.to_integer(year)
-        {:ok, date} = Date.new(year, month, day)
-        date
-      _ -> nil
-    end
-    ||
-    case Regex.run(~r/^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}:\d{2}Z$/, string) do
-      [_, year, month, day] ->
-        day = String.to_integer(day)
-        month = String.to_integer(month)
-        year = String.to_integer(year)
-        {:ok, date} = Date.new(year, month, day)
-        date
-      _ -> nil
+  defp parse_dt(string) do
+    case NaiveDateTime.from_iso8601(string) do
+      {:ok, datetime} -> datetime
+      {:error, _} -> nil
     end
   end
 end

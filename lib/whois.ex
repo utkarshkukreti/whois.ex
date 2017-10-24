@@ -52,9 +52,9 @@ defmodule Whois do
     raw
     |> String.split("\n")
     |> Enum.find_value(fn line ->
-      case String.trim(line) do
-        "Whois Server: " <> host -> host
-        _ -> nil
+      if line |> String.trim |> String.downcase |> String.contains?("whois server:") do
+        [_, host] = String.split(line, ":")
+        String.trim(host)
       end
     end)
   end

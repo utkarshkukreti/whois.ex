@@ -22,11 +22,11 @@ defmodule Whois do
                :error -> Server.for(domain)
              end
     case server do
-      {:ok, %Server{host: host, prefix: prefix}} ->
+      {:ok, %Server{host: host}} ->
         with {:ok, socket} <- :gen_tcp.connect(String.to_charlist(host),
                                                43,
                                                [:binary, active: false]),
-             :ok <- :gen_tcp.send(socket, "#{prefix}#{domain}\r\n") do
+             :ok <- :gen_tcp.send(socket, [domain, "\r\n"]) do
           raw = recv(socket)
           if next_server = next_server(raw) do
             opts = opts |> Keyword.put(:server, next_server)

@@ -10,9 +10,9 @@ defmodule Whois.RecordTest do
                                   "ns3.google.com",
                                   "ns4.google.com"]
     assert record.registrar == "MarkMonitor Inc."
-    assert record.created_at == dmy(15, 9, 1997)
-    assert record.updated_at == dmy(20, 7, 2011)
-    assert record.expires_at == dmy(14, 9, 2020)
+    assert record.created_at == ~D[1997-09-15]
+    assert record.updated_at == ~D[2011-07-20]
+    assert record.expires_at == ~D[2020-09-14]
   end
 
   test "parse google.net" do
@@ -23,9 +23,9 @@ defmodule Whois.RecordTest do
                                   "ns3.google.net",
                                   "ns4.google.net"]
     assert record.registrar == "MarkMonitor Inc."
-    assert record.created_at == dmy(15, 3, 1999)
-    assert record.updated_at == dmy(7, 9, 2017)
-    assert record.expires_at == dmy(15, 3, 2018)
+    assert record.created_at == ~D[1999-03-15]
+    assert record.updated_at == ~D[2017-09-07]
+    assert record.expires_at == ~D[2018-03-15]
   end
 
   test "parse google.org" do
@@ -36,9 +36,9 @@ defmodule Whois.RecordTest do
                                              "ns3.google.com",
                                              "ns4.google.com"]
     assert record.registrar == "MarkMonitor Inc."
-    assert record.created_at == dmy(21, 10, 1998)
-    assert record.updated_at == dmy(18, 9, 2017)
-    assert record.expires_at == dmy(20, 10, 2018)
+    assert record.created_at == ~D[1998-10-21]
+    assert record.updated_at == ~D[2017-09-18]
+    assert record.expires_at == ~D[2018-10-20]
   end
 
   defp parse(domain) do
@@ -46,9 +46,5 @@ defmodule Whois.RecordTest do
     |> Path.expand(__DIR__)
     |> File.read!
     |> Whois.Record.parse
-  end
-
-  defp dmy(day, month, year) do
-    %{day: day, month: month, year: year}
   end
 end

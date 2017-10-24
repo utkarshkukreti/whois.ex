@@ -2,17 +2,13 @@ defmodule Whois.Record do
   defstruct [:domain, :raw, :nameservers, :registrar,
              :created_at, :updated_at, :expires_at]
 
-  @type date :: %{day: integer,
-                  month: integer,
-                  year: integer}
-
   @type t :: %__MODULE__{domain: String.t,
                          raw: String.t,
                          nameservers: [String.t],
                          registrar: String.t,
-                         created_at: date,
-                         updated_at: date,
-                         expires_at: date}
+                         created_at: Date.t,
+                         updated_at: Date.t,
+                         expires_at: Date.t}
 
   @doc """
   Parses the raw WHOIS server response in `raw` into a `%Whois.Record{}`.
@@ -59,7 +55,8 @@ defmodule Whois.Record do
                   "sep" -> 9; "oct" -> 10; "nov" -> 11; "dec" -> 12
                 end
         year = String.to_integer(year)
-        %{day: day, month: month, year: year}
+        {:ok, date} = Date.new(year, month, day)
+        date
       _ -> nil
     end
     ||
@@ -68,7 +65,8 @@ defmodule Whois.Record do
         day = String.to_integer(day)
         month = String.to_integer(month)
         year = String.to_integer(year)
-        %{day: day, month: month, year: year}
+        {:ok, date} = Date.new(year, month, day)
+        date
       _ -> nil
     end
   end

@@ -19,12 +19,11 @@ end
 ## Usage
 
 ```elixir
-iex> Whois.lookup("google.com")
+iex(1)> Whois.lookup("google.com")
 {:ok,
- %Whois.Record{created_at: %{day: 15, month: 9, year: 1997},
-  domain: "GOOGLE.COM", expires_at: %{day: 14, month: 9, year: 2020},
-  nameservers: ["NS1.GOOGLE.COM", "NS2.GOOGLE.COM", "NS3.GOOGLE.COM",
-   "NS4.GOOGLE.COM"],
-  raw: "…",
-  registrar: "MARKMONITOR INC.", updated_at: %{day: 20, month: 7, year: 2011}}}
+ %Whois.Record{created_at: ~N[1997-09-15 00:00:00], domain: "google.com",
+  expires_at: ~N[2020-09-14 04:00:00],
+  nameservers: ["ns1.google.com", "ns2.google.com", "ns3.google.com",
+   "ns4.google.com"], raw: "…", registrar: "MarkMonitor, Inc.",
+  updated_at: ~N[2017-09-07 08:50:36]}}
 ```

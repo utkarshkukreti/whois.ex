@@ -3,7 +3,7 @@ defmodule Whois.Server do
 
   @type t :: %__MODULE__{host: String.t}
 
-  @all File.read!(Path.expand("../../data/tld.csv", __DIR__))
+  @all File.read!(Application.app_dir(:whois, "priv/tld.csv"))
   |> String.trim
   |> String.split("\n")
   |> Enum.map(fn line ->

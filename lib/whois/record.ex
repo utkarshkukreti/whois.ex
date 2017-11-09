@@ -77,6 +77,15 @@ defmodule Whois.Record do
                     "registry expiry date" ->
                       %{record | expires_at: parse_dt(value) || record.expires_at}
 
+                    "registrant " <> name ->
+                      Map.update!(record, :registrant, &parse_contact(&1, name, value))
+
+                    "admin " <> name ->
+                      Map.update!(record, :administrator, &parse_contact(&1, name, value))
+
+                    "tech " <> name ->
+                      Map.update!(record, :technical, &parse_contact(&1, name, value))
+
                     _ ->
                       record
                   end
@@ -98,6 +107,29 @@ defmodule Whois.Record do
     case NaiveDateTime.from_iso8601(string) do
       {:ok, datetime} -> datetime
       {:error, _} -> nil
+    end
+  end
+
+  defp parse_contact(%Contact{} = contact, name, value) do
+    key =
+      case name do
+        "name" -> :name
+        "organization" -> :organization
+        "street" -> :street
+        "city" -> :city
+        "state/province" -> :state
+        "postal code" -> :zip
+        "country" -> :country
+        "phone" -> :phone
+        "fax" -> :fax
+        "email" -> :email
+        _ -> nil
+      end
+
+    if key do
+      contact |> Map.put(key, value)
+    else
+      contact
     end
   end
 end

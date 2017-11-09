@@ -2,6 +2,8 @@ defmodule Whois.RecordTest do
   use ExUnit.Case
   doctest Whois.Record
 
+  alias Whois.Contact
+
   test "parse google.com" do
     record = parse("google.com")
     assert record.domain == "google.com"
@@ -51,6 +53,34 @@ defmodule Whois.RecordTest do
     assert_dt(record.created_at, ~D[1998-10-21])
     assert_dt(record.updated_at, ~D[2017-09-18])
     assert_dt(record.expires_at, ~D[2018-10-20])
+  end
+
+  test "parse google.{com,net,org}" do
+    for domain <- ["google.com", "google.net", "google.org"] do
+      record = parse(domain)
+
+      {street, phone, fax} =
+        case domain do
+          "google.com" -> {"1600 Amphitheatre Parkway,", "+1.6502530000", "+1.6502530001"}
+          "google.net" -> {"1600 Amphitheatre Parkway", "+1.6506234000", "+1.6506188571"}
+          "google.org" -> {"1600 Amphitheatre Parkway", "+1.6506234000", "+1.6506188571"}
+        end
+
+      for key <- [:registrant, :administrator, :technical] do
+        assert Map.get(record, key) == %Contact{
+                 name: "DNS Admin",
+                 organization: "Google Inc.",
+                 street: street,
+                 city: "Mountain View",
+                 state: "CA",
+                 zip: "94043",
+                 country: "US",
+                 phone: phone,
+                 fax: fax,
+                 email: "dns-admin@google.com"
+               }
+      end
+    end
   end
 
   defp parse(domain) do

@@ -30,14 +30,19 @@ defmodule Whois do
              :ok <- :gen_tcp.send(socket, [domain, "\r\n"]) do
           raw = recv(socket)
 
-          if next_server = next_server(raw) do
-            opts = opts |> Keyword.put(:server, next_server)
+          case next_server(raw) do
+            nil ->
+              {:ok, raw}
 
-            with {:ok, raw2} <- lookup_raw(domain, opts) do
-              {:ok, raw <> raw2}
-            end
-          else
-            {:ok, raw}
+            ^host ->
+              {:ok, raw}
+
+            next_server ->
+              opts = opts |> Keyword.put(:server, next_server)
+
+              with {:ok, raw2} <- lookup_raw(domain, opts) do
+                {:ok, raw <> raw2}
+              end
           end
         end
 

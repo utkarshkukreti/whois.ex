@@ -1,5 +1,18 @@
 defmodule Whois.Record do
-  defstruct [:domain, :raw, :nameservers, :registrar, :created_at, :updated_at, :expires_at]
+  alias Whois.Contact
+
+  defstruct [
+    :domain,
+    :raw,
+    :nameservers,
+    :registrar,
+    :created_at,
+    :updated_at,
+    :expires_at,
+    :registrant,
+    :administrator,
+    :technical
+  ]
 
   @type t :: %__MODULE__{
           domain: String.t(),
@@ -8,7 +21,10 @@ defmodule Whois.Record do
           registrar: String.t(),
           created_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t(),
-          expires_at: NaiveDateTime.t()
+          expires_at: NaiveDateTime.t(),
+          registrant: Contact.t(),
+          administrator: Contact.t(),
+          technical: Contact.t()
         }
 
   @doc """
@@ -16,7 +32,13 @@ defmodule Whois.Record do
   """
   @spec parse(String.t()) :: t
   def parse(raw) do
-    record = %Whois.Record{raw: raw, nameservers: []}
+    record = %Whois.Record{
+      raw: raw,
+      nameservers: [],
+      registrant: %Contact{},
+      administrator: %Contact{},
+      technical: %Contact{}
+    }
 
     record =
       raw

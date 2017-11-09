@@ -2,15 +2,17 @@ defmodule Whois.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :whois,
-     version: "0.1.0",
-     elixir: "~> 1.2",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     elixirc_paths: elixirc_paths(Mix.env),
-     deps: deps(),
-     description: "Pure Elixir WHOIS client and parser.",
-     package: package()]
+    [
+      app: :whois,
+      version: "0.1.0",
+      elixir: "~> 1.2",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      deps: deps(),
+      description: "Pure Elixir WHOIS client and parser.",
+      package: package()
+    ]
   end
 
   # Configuration for the OTP application
@@ -21,7 +23,7 @@ defmodule Whois.Mixfile do
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Dependencies can be Hex packages:
   #
@@ -37,8 +39,10 @@ defmodule Whois.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Utkarsh Kukreti"],
-     licenses: ["MIT"],
-     links: %{"GitHub": "https://github.com/utkarshkukreti/whois.ex"}]
+    [
+      maintainers: ["Utkarsh Kukreti"],
+      licenses: ["MIT"],
+      links: %{GitHub: "https://github.com/utkarshkukreti/whois.ex"}
+    ]
   end
 end

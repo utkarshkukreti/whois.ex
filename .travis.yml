@@ -1,0 +1,4 @@
+language: elixir
+script: mix test --include live
+elixir: 1.5
+otp_release: 20.1

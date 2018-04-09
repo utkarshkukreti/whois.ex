@@ -44,56 +44,56 @@ defmodule Whois.Record do
       raw
       |> String.split("\n")
       |> Enum.reduce(record, fn line, record ->
-           line
-           |> String.trim()
-           |> String.split(":", parts: 2)
-           |> case do
-                [name, value] ->
-                  name = name |> String.trim() |> String.downcase()
-                  value = value |> String.trim()
+        line
+        |> String.trim()
+        |> String.split(":", parts: 2)
+        |> case do
+          [name, value] ->
+            name = name |> String.trim() |> String.downcase()
+            value = value |> String.trim()
 
-                  case name do
-                    "domain name" ->
-                      %{record | domain: value}
+            case name do
+              "domain name" ->
+                %{record | domain: value}
 
-                    "name server" ->
-                      %{record | nameservers: record.nameservers ++ [value]}
+              "name server" ->
+                %{record | nameservers: record.nameservers ++ [value]}
 
-                    "registrar" ->
-                      %{record | registrar: value}
+              "registrar" ->
+                %{record | registrar: value}
 
-                    "sponsoring registrar" ->
-                      %{record | registrar: value}
+              "sponsoring registrar" ->
+                %{record | registrar: value}
 
-                    "creation date" ->
-                      %{record | created_at: parse_dt(value) || record.created_at}
+              "creation date" ->
+                %{record | created_at: parse_dt(value) || record.created_at}
 
-                    "updated date" ->
-                      %{record | updated_at: parse_dt(value) || record.updated_at}
+              "updated date" ->
+                %{record | updated_at: parse_dt(value) || record.updated_at}
 
-                    "expiration date" ->
-                      %{record | expires_at: parse_dt(value) || record.expires_at}
+              "expiration date" ->
+                %{record | expires_at: parse_dt(value) || record.expires_at}
 
-                    "registry expiry date" ->
-                      %{record | expires_at: parse_dt(value) || record.expires_at}
+              "registry expiry date" ->
+                %{record | expires_at: parse_dt(value) || record.expires_at}
 
-                    "registrant " <> name ->
-                      Map.update!(record, :registrant, &parse_contact(&1, name, value))
+              "registrant " <> name ->
+                Map.update!(record, :registrant, &parse_contact(&1, name, value))
 
-                    "admin " <> name ->
-                      Map.update!(record, :administrator, &parse_contact(&1, name, value))
+              "admin " <> name ->
+                Map.update!(record, :administrator, &parse_contact(&1, name, value))
 
-                    "tech " <> name ->
-                      Map.update!(record, :technical, &parse_contact(&1, name, value))
+              "tech " <> name ->
+                Map.update!(record, :technical, &parse_contact(&1, name, value))
 
-                    _ ->
-                      record
-                  end
+              _ ->
+                record
+            end
 
-                _ ->
-                  record
-              end
-         end)
+          _ ->
+            record
+        end
+      end)
 
     nameservers =
       record.nameservers

@@ -62,13 +62,13 @@ defmodule Whois do
     raw
     |> String.split("\n")
     |> Enum.find_value(fn line ->
-         line
-         |> String.trim()
-         |> String.downcase()
-         |> case do
-              "whois server:" <> host -> String.trim(host)
-              _ -> nil
-            end
-       end)
+      line
+      |> String.trim()
+      |> String.downcase()
+      |> case do
+        "whois server:" <> host -> String.trim(host)
+        _ -> nil
+      end
+    end)
   end
 end

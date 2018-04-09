@@ -7,9 +7,9 @@ defmodule Whois.Server do
        |> String.trim()
        |> String.split("\n")
        |> Enum.map(fn line ->
-            [tld, host] = String.split(line, ",")
-            {tld, %{__struct__: __MODULE__, host: host}}
-          end)
+         [tld, host] = String.split(line, ",")
+         {tld, %{__struct__: __MODULE__, host: host}}
+       end)
        |> Map.new()
 
   @spec all :: map

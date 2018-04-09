@@ -67,7 +67,7 @@ defmodule Whois.RecordTest do
         end
 
       for key <- [:registrant, :administrator, :technical] do
-        assert Map.get(record, key) == %Contact{
+        assert Map.get(record.contacts, key) == %Contact{
                  name: "DNS Admin",
                  organization: "Google Inc.",
                  street: street,

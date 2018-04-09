@@ -9,9 +9,7 @@ defmodule Whois.Record do
     :created_at,
     :updated_at,
     :expires_at,
-    :registrant,
-    :administrator,
-    :technical
+    :contacts
   ]
 
   @type t :: %__MODULE__{
@@ -22,9 +20,11 @@ defmodule Whois.Record do
           created_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t(),
           expires_at: NaiveDateTime.t(),
-          registrant: Contact.t(),
-          administrator: Contact.t(),
-          technical: Contact.t()
+          contacts: %{
+            registrant: Contact.t(),
+            administrator: Contact.t(),
+            technical: Contact.t()
+          }
         }
 
   @doc """
@@ -35,9 +35,11 @@ defmodule Whois.Record do
     record = %Whois.Record{
       raw: raw,
       nameservers: [],
-      registrant: %Contact{},
-      administrator: %Contact{},
-      technical: %Contact{}
+      contacts: %{
+        registrant: %Contact{},
+        administrator: %Contact{},
+        technical: %Contact{}
+      }
     }
 
     record =
@@ -78,13 +80,13 @@ defmodule Whois.Record do
                 %{record | expires_at: parse_dt(value) || record.expires_at}
 
               "registrant " <> name ->
-                Map.update!(record, :registrant, &parse_contact(&1, name, value))
+                update_in(record.contacts.registrant, &parse_contact(&1, name, value))
 
               "admin " <> name ->
-                Map.update!(record, :administrator, &parse_contact(&1, name, value))
+                update_in(record.contacts.administrator, &parse_contact(&1, name, value))
 
               "tech " <> name ->
-                Map.update!(record, :technical, &parse_contact(&1, name, value))
+                update_in(record.contacts.technical, &parse_contact(&1, name, value))
 
               _ ->
                 record

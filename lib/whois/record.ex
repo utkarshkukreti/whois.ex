@@ -129,7 +129,7 @@ defmodule Whois.Record do
       end
 
     if key do
-      contact |> Map.put(key, value)
+      %{contact | key => value}
     else
       contact
     end

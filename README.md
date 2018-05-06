@@ -21,9 +21,52 @@ end
 ```elixir
 iex(1)> Whois.lookup("google.com")
 {:ok,
- %Whois.Record{created_at: ~N[1997-09-15 00:00:00], domain: "google.com",
-  expires_at: ~N[2020-09-14 04:00:00],
-  nameservers: ["ns1.google.com", "ns2.google.com", "ns3.google.com",
-   "ns4.google.com"], raw: "…", registrar: "MarkMonitor, Inc.",
-  updated_at: ~N[2017-09-07 08:50:36]}}
+ %Whois.Record{
+   contacts: %{
+     administrator: %Whois.Contact{
+       city: "Mountain View",
+       country: "US",
+       email: "dns-admin@google.com",
+       fax: "+1.6502530001",
+       name: "Domain Administrator",
+       organization: "Google LLC",
+       phone: "+1.6502530000",
+       state: "CA",
+       street: "1600 Amphitheatre Parkway,",
+       zip: "94043"
+     },
+     registrant: %Whois.Contact{
+       city: "Mountain View",
+       country: "US",
+       email: "dns-admin@google.com",
+       fax: "+1.6502530001",
+       name: "Domain Administrator",
+       organization: "Google LLC",
+       phone: "+1.6502530000",
+       state: "CA",
+       street: "1600 Amphitheatre Parkway,",
+       zip: "94043"
+     },
+     technical: %Whois.Contact{
+       city: "Mountain View",
+       country: "US",
+       email: "dns-admin@google.com",
+       fax: "+1.6502530001",
+       name: "Domain Administrator",
+       organization: "Google LLC",
+       phone: "+1.6502530000",
+       state: "CA",
+       street: "1600 Amphitheatre Parkway,",
+       zip: "94043"
+     }
+   },
+   created_at: ~N[1997-09-15 00:00:00],
+   domain: "google.com",
+   expires_at: ~N[2020-09-14 04:00:00],
+   nameservers: ["ns1.google.com", "ns2.google.com", "ns3.google.com",
+    "ns4.google.com"],
+   raw: "…",
+   registrar: "MarkMonitor, Inc.",
+   updated_at: ~N[2018-02-21 10:45:07]
+ }}
 ```

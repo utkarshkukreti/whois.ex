@@ -1,4 +1,4 @@
-# Whois
+# Whois [![Build Status](https://travis-ci.org/utkarshkukreti/whois.ex.svg?branch=master)](https://travis-ci.org/utkarshkukreti/whois.ex)
 
 Pure Elixir WHOIS client and parser.
 

@@ -66,8 +66,8 @@ defmodule Whois do
       |> String.trim()
       |> String.downcase()
       |> case do
-        "whois server:" <> host -> String.trim(host)
-        "registrar whois server:" <> host -> String.trim(host)
+        "whois server:" <> host -> host |> String.trim |> String.trim("/")
+        "registrar whois server:" <> host -> host |> String.trim |> String.trim("/")
         _ -> nil
       end
     end)

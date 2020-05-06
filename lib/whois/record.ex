@@ -5,6 +5,7 @@ defmodule Whois.Record do
     :domain,
     :raw,
     :nameservers,
+    :dnssec,
     :registrar,
     :created_at,
     :updated_at,
@@ -16,6 +17,7 @@ defmodule Whois.Record do
           domain: String.t(),
           raw: String.t(),
           nameservers: [String.t()],
+          dnssec: String.t(),
           registrar: String.t(),
           created_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t(),
@@ -61,7 +63,10 @@ defmodule Whois.Record do
               "name server" ->
                 %{record | nameservers: record.nameservers ++ [value]}
 
-              "registrar" ->
+              "dnssec" ->
+                %{record | dnssec: parse_dnssec(record.dnssec, value)}
+
+                "registrar" ->
                 %{record | registrar: value}
 
               "sponsoring registrar" ->
@@ -109,6 +114,17 @@ defmodule Whois.Record do
     case NaiveDateTime.from_iso8601(string) do
       {:ok, datetime} -> datetime
       {:error, _} -> nil
+    end
+  end
+
+  @doc """
+  Parses the DNSSEC value, which may not always be in sync across servers.
+  """
+  defp parse_dnssec(_dnssec, "signedDelegation"), do: "signedDelegation"
+  defp parse_dnssec(dnssec, "unsigned") do
+    case dnssec do
+      "signedDelegation" -> "signedDelegation"
+      _ -> "unsigned"
     end
   end
 

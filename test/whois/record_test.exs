@@ -15,6 +15,15 @@ defmodule Whois.RecordTest do
              "ns4.google.com"
            ]
 
+    assert record.status == [
+             "clientDeleteProhibited",
+             "clientTransferProhibited",
+             "clientUpdateProhibited",
+             "serverDeleteProhibited",
+             "serverTransferProhibited",
+             "serverUpdateProhibited"
+           ]
+
     assert record.registrar == "MarkMonitor, Inc."
     assert_dt(record.created_at, ~D[1997-09-15])
     assert_dt(record.updated_at, ~D[2017-09-07])
@@ -32,6 +41,15 @@ defmodule Whois.RecordTest do
              "ns4.google.net"
            ]
 
+    assert record.status == [
+             "clientDeleteProhibited",
+             "clientTransferProhibited",
+             "clientUpdateProhibited",
+             "serverDeleteProhibited",
+             "serverTransferProhibited",
+             "serverUpdateProhibited"
+           ]
+
     assert record.registrar == "MarkMonitor, Inc."
     assert_dt(record.created_at, ~D[1999-03-15])
     assert_dt(record.updated_at, ~D[2017-09-08])
@@ -47,6 +65,15 @@ defmodule Whois.RecordTest do
              "ns2.google.com",
              "ns3.google.com",
              "ns4.google.com"
+           ]
+
+    assert record.status == [
+             "clientDeleteProhibited",
+             "clientTransferProhibited",
+             "clientUpdateProhibited",
+             "serverDeleteProhibited",
+             "serverTransferProhibited",
+             "serverUpdateProhibited"
            ]
 
     assert record.registrar == "MarkMonitor, Inc."

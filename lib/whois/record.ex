@@ -157,7 +157,6 @@ defimpl Inspect, for: Whois.Record do
   def inspect(%Whois.Record{} = record, opts) do
     record
     |> Map.put(:raw, "…")
-    |> Map.delete(:__struct__)
-    |> Inspect.Map.inspect(Code.Identifier.inspect_as_atom(Whois.Record), opts)
+    |> Inspect.Any.inspect(opts)
   end
 end

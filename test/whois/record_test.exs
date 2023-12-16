@@ -110,6 +110,33 @@ defmodule Whois.RecordTest do
     end
   end
 
+  test "parse amoi.se" do
+    record = parse("amoi.se")
+    assert record.domain == "amoi.se"
+
+    assert record.nameservers == [
+             "ed.ns.cloudflare.com 199.27.135.11",
+             "chin.ns.cloudflare.com 173.245.58.84"
+           ]
+
+    assert record.status == ["ok"]
+
+    assert record.registrar == "Dotkeeper AB"
+    assert_dt(record.created_at, ~D[2020-03-11])
+    assert_dt(record.updated_at, ~D[2023-05-24])
+    assert_dt(record.expires_at, ~D[2024-03-11])
+  end
+
+  test "parse amoi.no" do
+    record = parse("amoi.no")
+    assert record.domain == "amoi.no"
+    assert Enum.empty?(record.nameservers)
+    assert record.registrar == "REG802-NORID"
+    assert_dt(record.created_at, ~D[2023-11-06])
+    assert_dt(record.updated_at, ~D[2023-11-06])
+    refute record.expires_at
+  end
+
   defp parse(domain) do
     "../fixtures/raw/#{domain}"
     |> Path.expand(__DIR__)

@@ -1,4 +1,4 @@
-# Whois [![Build Status](https://travis-ci.org/utkarshkukreti/whois.ex.svg?branch=master)](https://travis-ci.org/utkarshkukreti/whois.ex)
+# Whois [![Build and Test](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-build-and-test.yml/badge.svg)](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-build-and-test.yml) [![Elixir Quality Checks](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-quality-checks.yml/badge.svg)](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-quality-checks.yml) [![Elixir Type Linting](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-dialyzer.yml/badge.svg)](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-dialyzer.yml) [![Code coverage](https://codecov.io/gh/s3cur3/whois.ex/graph/badge.svg?token=Xe9iuK8f63)](https://codecov.io/gh/s3cur3/whois.ex)
 
 Pure Elixir WHOIS client and parser.
 

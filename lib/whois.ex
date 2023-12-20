@@ -2,7 +2,8 @@ defmodule Whois do
   @moduledoc """
   A WHOIS client for Elixir.
   """
-  alias Whois.{Record, Server}
+  alias Whois.Record
+  alias Whois.Server
 
   @type lookup_option :: {:server, String.t() | Server.t()} | {:fall_back_to_iana?, boolean}
 
@@ -23,7 +24,8 @@ defmodule Whois do
       iex> NaiveDateTime.after?(record.expires_at, NaiveDateTime.utc_now())
       true
   """
-  @spec lookup(String.t(), [lookup_option]) :: {:ok, Record.t()} | {:error, atom}
+  @spec lookup(String.t(), [lookup_option]) ::
+          {:ok, Record.t()} | {:error, :timed_out | :unsupported_tld}
   def lookup(domain, opts \\ []) do
     with {:ok, raw} <- lookup_raw(domain, opts),
          %Record{domain: d} = record when byte_size(d) > 0 <- Record.parse(raw) do
@@ -52,40 +54,36 @@ defmodule Whois do
         :error -> Server.for(domain)
       end
 
-    case server do
-      {:ok, %Server{host: host}} ->
-        with {:ok, socket} <-
-               :gen_tcp.connect(String.to_charlist(host), 43, [:binary, active: false]),
-             :ok <- :gen_tcp.send(socket, [domain, "\r\n"]) do
-          raw = recv(socket)
+    with {:ok, %Server{host: host}} <- server,
+         {:ok, socket} <-
+           :gen_tcp.connect(String.to_charlist(host), 43, [:binary, active: false]),
+         :ok <- :gen_tcp.send(socket, [domain, "\r\n"]),
+         raw when is_binary(raw) <- recv(socket) do
+      case next_server(raw) do
+        nil ->
+          {:ok, raw}
 
-          case next_server(raw) do
-            nil ->
-              {:ok, raw}
+        "" ->
+          {:ok, raw}
 
-            "" ->
-              {:ok, raw}
+        ^host ->
+          {:ok, raw}
 
-            ^host ->
-              {:ok, raw}
+        next_server ->
+          opts = Keyword.put(opts, :server, next_server)
 
-            next_server ->
-              opts = opts |> Keyword.put(:server, next_server)
-
-              with {:ok, raw2} <- lookup_raw(domain, opts) do
-                {:ok, raw <> raw2}
-              end
+          with {:ok, raw2} <- lookup_raw(domain, opts) do
+            {:ok, raw <> raw2}
           end
-        end
-
-      {:error, _} = error ->
-        error
+      end
     end
   end
 
+  @spec recv(socket :: :gen_tcp.socket(), acc :: String.t()) :: String.t() | {:error, :timed_out}
   defp recv(socket, acc \\ "") do
     case :gen_tcp.recv(socket, 0) do
       {:ok, data} -> recv(socket, acc <> data)
+      {:error, :etimedout} -> {:error, :timed_out}
       {:error, :closed} -> acc
     end
   end

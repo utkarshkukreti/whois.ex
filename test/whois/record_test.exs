@@ -1,5 +1,5 @@
 defmodule Whois.RecordTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Whois.Record
 
   alias Whois.Contact
@@ -137,6 +137,26 @@ defmodule Whois.RecordTest do
     refute record.expires_at
   end
 
+  test "parse jasstafel.michaelruoss.ch" do
+    record = parse("jasstafel.michaelruoss.ch")
+
+    # This is a quirk of the IANA server
+    assert record.domain == "CH"
+
+    assert record.nameservers == [
+             "a.nic.ch 130.59.31.41 2001:620:0:ff:0:0:0:56",
+             "b.nic.ch 130.59.31.43 2001:620:0:ff:0:0:0:58",
+             "d.nic.ch 194.0.25.39 2001:678:20:0:0:0:0:39",
+             "e.nic.ch 194.0.17.1 2001:678:3:0:0:0:0:1",
+             "f.nic.ch 194.146.106.10 2001:67c:1010:2:0:0:0:53"
+           ]
+
+    refute record.registrar
+    assert_dt(record.created_at, ~D[1987-05-20])
+    assert_dt(record.updated_at, ~D[2023-11-30])
+    refute record.expires_at
+  end
+
   defp parse(domain) do
     "../fixtures/raw/#{domain}"
     |> Path.expand(__DIR__)
@@ -144,7 +164,11 @@ defmodule Whois.RecordTest do
     |> Whois.Record.parse()
   end
 
-  defp assert_dt(datetime, date) do
+  defp assert_dt(%NaiveDateTime{} = datetime, date) do
     assert NaiveDateTime.to_date(datetime) == date
+  end
+
+  defp assert_dt(nil, _date) do
+    raise "expected a date"
   end
 end

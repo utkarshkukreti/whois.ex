@@ -70,7 +70,7 @@ defmodule Whois.Record do
               c when c in ["creation date", "created"] ->
                 %{record | created_at: parse_dt(value) || record.created_at}
 
-              u when u in ["updated date", "modified", "last updated"] ->
+              u when u in ["updated date", "modified", "last updated", "changed"] ->
                 %{record | updated_at: parse_dt(value) || record.updated_at}
 
               e when e in ["expiration date", "expires", "registry expiry date"] ->

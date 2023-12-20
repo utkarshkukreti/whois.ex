@@ -116,7 +116,7 @@ defmodule Whois.Record do
     %{record | nameservers: nameservers, status: status}
   end
 
-  def split_key_and_value(line) do
+  defp split_key_and_value(line) do
     line
     |> String.trim()
     |> String.split(":", parts: 2, trim: true)

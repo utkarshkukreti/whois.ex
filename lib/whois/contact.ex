@@ -1,4 +1,7 @@
 defmodule Whois.Contact do
+  @moduledoc """
+  Contact information listed in a WHOIS record.
+  """
   defstruct [:name, :organization, :street, :city, :state, :zip, :country, :phone, :fax, :email]
 
   @type t :: %__MODULE__{

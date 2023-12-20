@@ -1,4 +1,7 @@
 defmodule Whois.Record do
+  @moduledoc """
+  A parsed WHOIS record.
+  """
   alias Whois.Contact
 
   defstruct [

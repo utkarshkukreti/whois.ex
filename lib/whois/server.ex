@@ -1,4 +1,5 @@
 defmodule Whois.Server do
+  @moduledoc false
   defstruct [:host]
 
   @type t :: %__MODULE__{host: String.t()}

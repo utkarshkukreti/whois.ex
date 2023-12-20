@@ -1,4 +1,6 @@
 defmodule Mix.Tasks.Whois.Fetch do
+  @moduledoc false
+
   def run(domains) do
     root = Path.expand("../fixtures/raw", __DIR__)
     File.mkdir_p!(root)

@@ -56,7 +56,8 @@ defmodule Whois.Mixfile do
       {:credo, "~> 1.7.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.18.0", only: [:dev, :test], runtime: false},
-      {:recode, "~> 0.6", only: [:dev, :test]}
+      {:recode, "~> 0.6", only: [:dev, :test]},
+      {:patch, "~> 0.13.0", only: [:test]}
     ]
   end
 

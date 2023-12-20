@@ -40,3 +40,15 @@ defmodule WhoisTest do
 
   defp wait, do: Process.sleep(2500)
 end
+
+defmodule WhoisSyncTest do
+  # Can't be async due to the use of Patch
+  use ExUnit.Case, async: false
+  use Patch
+
+  @tag :live
+  test "handles timeouts" do
+    Patch.patch(:gen_tcp, :recv, {:error, :etimedout})
+    assert Whois.lookup("google.com") == {:error, :timed_out}
+  end
+end

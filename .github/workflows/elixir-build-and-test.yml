@@ -52,7 +52,7 @@ jobs:
       # Optional, but Codecov has a bot that will comment on your PR with per-file
       # coverage deltas.
       - name: Upload to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ./cover/excoveralls.json

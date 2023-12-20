@@ -15,9 +15,16 @@ defmodule Whois.Server do
   @spec all :: map
   def all, do: @all
 
-  @spec for(String.t()) :: {:ok, t} | :error
+  @spec for(String.t()) :: {:ok, t} | {:error, :unsupported_tld}
   def for(domain) do
-    [_, tld] = String.split(domain, ".", parts: 2)
-    Map.fetch(@all, tld)
+    tld =
+      domain
+      |> String.split(".")
+      |> List.last()
+
+    case @all[tld] do
+      nil -> {:error, :unsupported_tld}
+      server -> {:ok, server}
+    end
   end
 end

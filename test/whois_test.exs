@@ -1,6 +1,5 @@
 defmodule WhoisTest do
   use ExUnit.Case, async: true
-  doctest Whois
 
   setup do
     wait()

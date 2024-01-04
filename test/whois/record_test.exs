@@ -137,6 +137,23 @@ defmodule Whois.RecordTest do
     refute record.expires_at
   end
 
+  test "parse wheel.im" do
+    record = parse("wheel.im")
+    assert record.domain == "wheel.im"
+
+    assert record.nameservers == [
+             "ns-1031.awsdns-00.org.",
+             "ns-1904.awsdns-46.co.uk.",
+             "ns-297.awsdns-37.com.",
+             "ns-621.awsdns-13.net."
+           ]
+
+    refute record.registrar
+    refute record.created_at
+    refute record.updated_at
+    assert_dt(record.expires_at, ~D[2024-02-29])
+  end
+
   test "parse a domain that refuses bot queries" do
     record = parse("jasstafel.michaelruoss.ch")
     assert Whois.Record.is_empty(record)

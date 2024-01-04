@@ -80,7 +80,7 @@ defmodule Whois.Record do
               u when u in ["updated date", "modified", "last updated", "changed"] ->
                 %{record | updated_at: parse_dt(value) || record.updated_at}
 
-              e when e in ["expiration date", "expires", "registry expiry date"] ->
+              e when e in ["expiration date", "expires", "registry expiry date", "expiry date"] ->
                 %{record | expires_at: parse_dt(value) || record.expires_at}
 
               "registrant " <> name ->
@@ -154,7 +154,23 @@ defmodule Whois.Record do
          {:ok, datetime} <- NaiveDateTime.new(date, Time.new!(0, 0, 0)) do
       datetime
     else
-      _ -> nil
+      _ -> guess_date(string)
+    end
+  end
+
+  defp guess_date(string) do
+    case DateTimeParser.parse_datetime(string) do
+      {:ok, %NaiveDateTime{} = naive} ->
+        naive
+
+      {:ok, %DateTime{} = dt} ->
+        case DateTime.shift_zone(dt, "Etc/UTC") do
+          {:ok, utc} -> DateTime.to_naive(utc)
+          {:error, _} -> nil
+        end
+
+      {:error, _} ->
+        nil
     end
   end
 

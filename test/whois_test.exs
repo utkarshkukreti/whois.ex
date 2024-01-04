@@ -42,6 +42,14 @@ defmodule WhoisTest do
     assert %NaiveDateTime{} = record.expires_at
   end
 
+  @tag :live
+  test "lookup/1 can check .me domains" do
+    assert {:ok, record} = Whois.lookup("aswinmohan.me")
+    assert record.domain == "aswinmohan.me"
+    assert record.created_at == ~N[2019-10-19 13:16:19]
+    assert %NaiveDateTime{} = record.expires_at
+  end
+
   defp wait, do: Process.sleep(2500)
 end
 

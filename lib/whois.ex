@@ -71,7 +71,12 @@ defmodule Whois do
           {:ok, raw}
 
         next_server ->
-          opts = Keyword.put(opts, :server, next_server)
+          next_host =
+            next_server
+            |> String.split("/")
+            |> List.first()
+
+          opts = Keyword.put(opts, :server, next_host)
 
           with {:ok, raw2} <- lookup_raw(domain, opts) do
             {:ok, raw <> raw2}

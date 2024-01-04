@@ -34,6 +34,14 @@ defmodule WhoisTest do
     assert {:error, :no_data_provided} = Whois.lookup("michaelruoss.ch")
   end
 
+  @tag :live
+  test "lookup/1 can check .africa domains" do
+    assert {:ok, record} = Whois.lookup("mche.africa")
+    assert record.domain == "mche.africa"
+    assert record.created_at == ~N[2023-12-20T07:45:20.00]
+    assert %NaiveDateTime{} = record.expires_at
+  end
+
   defp wait, do: Process.sleep(2500)
 end
 

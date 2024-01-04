@@ -70,3 +70,16 @@ iex(1)> Whois.lookup("google.com")
    updated_at: ~N[2018-02-21 10:45:07]
  }}
 ```
+
+## Development
+
+### Updating the list of Whois servers
+
+The `priv` directory contains a Makefile that will download the latest TLD reference file from the web and parse it into a structure we can use at compile time. Run it like this:
+
+```sh
+cd priv
+make clean
+make tld.json
+make tld.csv
+```

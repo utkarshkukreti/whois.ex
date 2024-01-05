@@ -55,10 +55,10 @@ defmodule Whois do
         :error -> Server.for(domain)
       end
 
-    with {:ok, %Server{host: host}} <- server,
+    with {:ok, %Server{host: host} = server} <- server,
          {:ok, socket} <-
            :gen_tcp.connect(String.to_charlist(host), 43, [:binary, active: false]),
-         :ok <- :gen_tcp.send(socket, [domain, "\r\n"]),
+         :ok <- :gen_tcp.send(socket, [query(server, domain), "\r\n"]),
          raw when is_binary(raw) <- recv(socket) do
       case next_server(raw) do
         nil ->
@@ -70,15 +70,8 @@ defmodule Whois do
         ^host ->
           {:ok, raw}
 
-        next_server ->
-          next_host =
-            next_server
-            |> String.split("/")
-            |> List.first()
-
-          opts = Keyword.put(opts, :server, next_host)
-
-          with {:ok, raw2} <- lookup_raw(domain, opts) do
+        next ->
+          with {:ok, raw2} <- lookup_raw(domain, [{:server, next} | opts]) do
             {:ok, raw <> raw2}
           end
       end
@@ -94,6 +87,17 @@ defmodule Whois do
     end
   end
 
+  # Denic.de says:
+  #
+  # > To query the status of a domain, please use whois.denic – to query the technical data and 
+  # > the date of the last change to the domain data please use 
+  # > "whois -h whois.denic.de -T dn <domain.de>".
+  #
+  # https://www.denic.de/en/service/whois-service/
+  defp query(%Server{host: "whois.denic.de"}, domain), do: "-T dn #{domain}"
+
+  defp query(_, domain), do: domain
+
   defp next_server(raw) do
     raw
     |> String.split("\n")
@@ -102,10 +106,24 @@ defmodule Whois do
       |> String.trim()
       |> String.downcase()
       |> case do
+        "whois:" <> host -> String.trim(host)
         "whois server:" <> host -> String.trim(host)
         "registrar whois server:" <> host -> String.trim(host)
         _ -> nil
       end
     end)
+    |> case do
+      "http://" <> _ = url -> URI.parse(url).host
+      "https://" <> _ = url -> URI.parse(url).host
+      host when is_binary(host) -> remove_trailing_path(host)
+      nil -> nil
+    end
+  end
+
+  # Handles non-URL cases like "godaddy.com/"
+  defp remove_trailing_path(next_server) do
+    next_server
+    |> String.split("/")
+    |> List.first()
   end
 end

@@ -68,7 +68,7 @@ defmodule Whois.Record do
               s when s in ["domain status", "status"] ->
                 %{record | status: record.status ++ [value]}
 
-              r when r in ["registrar", "registrar handle"] ->
+              r when r in ["registrar", "registrar handle", "registrar name"] ->
                 %{record | registrar: value}
 
               "sponsoring registrar" ->
@@ -77,7 +77,15 @@ defmodule Whois.Record do
               c when c in ["creation date", "created"] ->
                 %{record | created_at: parse_dt(value) || record.created_at}
 
-              u when u in ["updated", "updated date", "modified", "last updated", "changed"] ->
+              u
+              when u in [
+                     "updated",
+                     "updated date",
+                     "modified",
+                     "last updated",
+                     "changed",
+                     "last modified"
+                   ] ->
                 %{record | updated_at: parse_dt(value) || record.updated_at}
 
               e when e in ["expiration date", "expires", "registry expiry date", "expiry date"] ->

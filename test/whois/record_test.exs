@@ -165,6 +165,48 @@ defmodule Whois.RecordTest do
     refute record.expires_at
   end
 
+  test "parse a .io domain" do
+    record = parse("rumdash.io")
+    refute Whois.Record.is_empty(record)
+    assert record.domain == "rumdash.io"
+    assert record.status == ["clientTransferProhibited"]
+    assert record.nameservers == ["tara.ns.cloudflare.com", "clyde.ns.cloudflare.com"]
+    assert record.registrar == "Cloudflare, Inc"
+    assert_dt(record.created_at, ~D[2022-11-20])
+    assert_dt(record.updated_at, ~D[2023-10-26])
+    assert_dt(record.expires_at, ~D[2024-11-20])
+  end
+
+  test "parse a .com.au domain" do
+    record = parse("thinkactively.com.au")
+    refute Whois.Record.is_empty(record)
+    assert record.domain == "thinkactively.com.au"
+    assert record.status == ["serverRenewProhibited"]
+    assert record.nameservers == ["dns1.alwaysdata.com", "dns2.alwaysdata.com"]
+    assert record.registrar == "SYNERGY WHOLESALE ACCREDITATIONS PTY LTD"
+    refute record.created_at
+    assert_dt(record.updated_at, ~D[2023-09-24])
+    refute record.expires_at
+  end
+
+  test "parse a .de domain" do
+    record = parse("zweitag.de")
+    refute Whois.Record.is_empty(record)
+    assert record.domain == "zweitag.de"
+
+    assert record.nameservers == [
+             "ns1.zweitag.de 205.251.197.248",
+             "ns2.zweitag.de 205.251.198.68",
+             "ns3.zweitag.de 205.251.194.50",
+             "ns4.zweitag.de 205.251.192.69"
+           ]
+
+    refute record.registrar
+    refute record.created_at
+    assert_dt(record.updated_at, ~D[2022-06-20])
+    refute record.expires_at
+  end
+
   defp parse(domain), do: Whois.RecordFixtures.parsed_record_fixture(domain)
 
   defp assert_dt(%NaiveDateTime{} = datetime, date) do

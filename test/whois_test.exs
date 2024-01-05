@@ -50,6 +50,34 @@ defmodule WhoisTest do
     assert %NaiveDateTime{} = record.expires_at
   end
 
+  @tag :live
+  test "lookup/1 can check .de domains" do
+    assert {:ok, record} = Whois.lookup("spiegel.de")
+    assert record.domain == "spiegel.de"
+    assert record.status == ["connect"]
+
+    assert record.nameservers == [
+             "pns101.cloudns.net",
+             "pns102.cloudns.net",
+             "pns103.cloudns.net",
+             "pns104.cloudns.net"
+           ]
+
+    refute record.created_at
+    assert %NaiveDateTime{} = record.updated_at
+    refute record.expires_at
+  end
+
+  @tag :live
+  test "lookup/1 can check .io domains" do
+    assert {:ok, record} = Whois.lookup("rumdash.io")
+    assert record.domain == "rumdash.io"
+    assert record.registrar == "Cloudflare, Inc."
+    assert record.created_at == ~N[2022-11-20 17:43:37]
+    assert %NaiveDateTime{} = record.updated_at
+    assert %NaiveDateTime{} = record.expires_at
+  end
+
   defp wait, do: Process.sleep(2500)
 end
 

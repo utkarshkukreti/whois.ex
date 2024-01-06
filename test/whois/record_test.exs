@@ -207,6 +207,21 @@ defmodule Whois.RecordTest do
     refute record.expires_at
   end
 
+  test "parse a .com.br domain" do
+    record = parse("algoltech.com.br")
+    refute Whois.Record.is_empty(record)
+    assert record.domain == "algoltech.com.br"
+    assert record.status == ["published"]
+
+    assert record.nameservers == [
+             "ns59.domaincontrol.com",
+             "ns60.domaincontrol.com"
+           ]
+
+    assert record.registrar == "GODADDY (86)"
+    assert_dt(record.expires_at, ~D[2024-05-26])
+  end
+
   defp parse(domain), do: Whois.RecordFixtures.parsed_record_fixture(domain)
 
   defp assert_dt(%NaiveDateTime{} = datetime, date) do

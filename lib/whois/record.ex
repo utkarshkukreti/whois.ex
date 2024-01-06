@@ -68,7 +68,7 @@ defmodule Whois.Record do
               s when s in ["domain status", "status"] ->
                 %{record | status: record.status ++ [value]}
 
-              r when r in ["registrar", "registrar handle", "registrar name"] ->
+              r when r in ["registrar", "registrar handle", "registrar name", "provider"] ->
                 %{record | registrar: value}
 
               "sponsoring registrar" ->
@@ -161,6 +161,20 @@ defmodule Whois.Record do
     with {:ok, %Date{} = date} <- Date.from_iso8601(string),
          {:ok, datetime} <- NaiveDateTime.new(date, Time.new!(0, 0, 0)) do
       datetime
+    else
+      _ -> parse_smooshed_together_date(string)
+    end
+  end
+
+  # Handles dates use on .com.br domains like 20240526
+  defp parse_smooshed_together_date(string) do
+    with [<<year::binary-4, month::binary-2, day::binary-2>> | _] <- String.split(string),
+         {year, ""} when year > 1980 and year < 2200 <- Integer.parse(year),
+         {month, ""} when month >= 1 and month <= 12 <- Integer.parse(month),
+         {day, ""} when day >= 1 and day <= 31 <- Integer.parse(day),
+         {:ok, date} <- Date.new(year, month, day),
+         {:ok, naive} <- NaiveDateTime.new(date, Time.new!(0, 0, 0)) do
+      naive
     else
       _ -> guess_date(string)
     end

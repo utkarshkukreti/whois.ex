@@ -1,0 +1,34 @@
+domain:      algoltech.com.br
+owner:       Jane Doe
+ownerid:     281.905.708-03
+country:     BR
+owner-c:     TOGON12
+tech-c:      TOGON13
+nserver:     ns59.domaincontrol.com
+nsstat:      20231231 AA
+nslastaa:    20231231
+nserver:     ns60.domaincontrol.com
+nsstat:      20231231 AA
+nslastaa:    20231231
+saci:        yes
+created:     20210526 #22911015
+changed:     20230708
+expires:     20240526
+status:      published
+provider:    GODADDY (86)
+
+nic-hdl-br:  TOGON12
+person:      Jane Doe
+e-mail:      me@janedoe.me
+country:     BR
+created:     20210526
+changed:     20210526
+provider:    GODADDY (86)
+
+nic-hdl-br:  TOGON13
+person:      Jane Doe
+e-mail:      me@janedoe.me
+country:     BR
+created:     20210526
+changed:     20210526
+provider:    GODADDY (86)

@@ -29,8 +29,8 @@ defmodule Whois do
   ### Examples
 
       iex> {:ok, %Whois.Record{domain: "google.com"} = record} = Whois.lookup("google.com")
-      iex> NaiveDateTime.after?(record.expires_at, NaiveDateTime.utc_now())
-      true
+      iex> NaiveDateTime.compare(record.expires_at, NaiveDateTime.utc_now())
+      :gt
 
       iex> Whois.lookup("scha.ch")
       {:error, :no_data_provided}

@@ -1,4 +1,4 @@
-# Whois [![Build and Test](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-build-and-test.yml/badge.svg)](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-build-and-test.yml) [![Elixir Quality Checks](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-quality-checks.yml/badge.svg)](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-quality-checks.yml) [![Elixir Type Linting](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-dialyzer.yml/badge.svg)](https://github.com/s3cur3/whois.ex/actions/workflows/elixir-dialyzer.yml) [![Code coverage](https://codecov.io/gh/s3cur3/whois.ex/graph/badge.svg?token=Xe9iuK8f63)](https://codecov.io/gh/s3cur3/whois.ex)
+# Whois [![Build and Test](https://github.com/utkarshkukreti/whois.ex/actions/workflows/elixir-build-and-test.yml/badge.svg)](https://github.com/utkarshkukreti/whois.ex/actions/workflows/elixir-build-and-test.yml) [![Elixir Quality Checks](https://github.com/utkarshkukreti/whois.ex/actions/workflows/elixir-quality-checks.yml/badge.svg)](https://github.com/utkarshkukreti/whois.ex/actions/workflows/elixir-quality-checks.yml) [![Elixir Type Linting](https://github.com/utkarshkukreti/whois.ex/actions/workflows/elixir-dialyzer.yml/badge.svg)](https://github.com/utkarshkukreti/whois.ex/actions/workflows/elixir-dialyzer.yml) [![Code coverage](https://codecov.io/gh/utkarshkukreti/whois.ex/graph/badge.svg?token=Xe9iuK8f63)](https://codecov.io/gh/utkarshkukreti/whois.ex)
 
 Pure Elixir WHOIS client and parser.
 
@@ -72,6 +72,16 @@ iex(1)> Whois.lookup("google.com")
 ```
 
 ## Development
+
+### Preparing a PR
+
+There are a handful of code quality checks that CI runs. To run them locally, you can use:
+
+```sh
+mix check
+```
+
+This does *not* adequately test the TCP connection to real Whois servers, because the GitHub Actions IPs are generally blocked by the servers our "live" (i.e., full end-to-end) tests rely on. Full full test coverage, you'll need to run `mix test --include live` locally.
 
 ### Updating the list of Whois servers
 

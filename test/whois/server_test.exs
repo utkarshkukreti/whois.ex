@@ -12,9 +12,13 @@ defmodule Whois.ServerTest do
   end
 
   test "handles subdomains" do
-    {:ok, no_subdomain} = Whois.Server.for("example.com")
-    assert {:ok, ^no_subdomain} = Whois.Server.for("foo.example.com")
-    assert {:ok, ^no_subdomain} = Whois.Server.for("foo.bar.baz.example.com")
+    {:ok, dot_com} = Whois.Server.for("example.com")
+    assert {:ok, ^dot_com} = Whois.Server.for("foo.example.com")
+    assert {:ok, ^dot_com} = Whois.Server.for("foo.bar.baz.example.com")
+
+    {:ok, dot_co_dot_ca} = Whois.Server.for("example.co.ca")
+    assert {:ok, ^dot_co_dot_ca} = Whois.Server.for("foo.example.co.ca")
+    assert {:ok, ^dot_co_dot_ca} = Whois.Server.for("foo.bar.baz.example.co.ca")
   end
 
   test "handles unsupported TLDs" do

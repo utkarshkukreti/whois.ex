@@ -60,7 +60,6 @@ defmodule Whois.Mixfile do
       {:date_time_parser, "~> 1.2"},
       {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.18.0", only: [:dev, :test], runtime: false},
-      {:recode, "~> 0.6", only: [:dev, :test]},
       {:patch, "~> 0.13.0", only: [:test]}
     ]
   end
@@ -82,8 +81,7 @@ defmodule Whois.Mixfile do
         "test --warnings-as-errors",
         "format --check-formatted",
         "deps.unlock --check-unused",
-        "check.dialyzer",
-        "recode"
+        "check.dialyzer"
       ],
       "check.dialyzer": "cmd MIX_ENV=dev mix dialyzer"
     ]

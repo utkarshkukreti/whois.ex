@@ -5,6 +5,7 @@ defmodule Whois.Record do
     :domain,
     :raw,
     :nameservers,
+    :status,
     :registrar,
     :created_at,
     :updated_at,
@@ -16,6 +17,7 @@ defmodule Whois.Record do
           domain: String.t(),
           raw: String.t(),
           nameservers: [String.t()],
+          status: [String.t()],
           registrar: String.t(),
           created_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t(),
@@ -35,6 +37,7 @@ defmodule Whois.Record do
     record = %Whois.Record{
       raw: raw,
       nameservers: [],
+      status: [],
       contacts: %{
         registrant: %Contact{},
         administrator: %Contact{},
@@ -60,6 +63,9 @@ defmodule Whois.Record do
 
               "name server" ->
                 %{record | nameservers: record.nameservers ++ [value]}
+
+              "domain status" ->
+                %{record | status: record.status ++ [value]}
 
               "registrar" ->
                 %{record | registrar: value}
@@ -102,7 +108,18 @@ defmodule Whois.Record do
       |> Enum.map(&String.downcase/1)
       |> Enum.uniq()
 
-    %{record | nameservers: nameservers}
+    # remove duplicate entries and the icann link that comes with it "clienttransferprohibited https://icann.org/epp#clienttransferprohibited"
+    status =
+      record.status
+      |> Enum.flat_map(&String.split/1)
+      |> Enum.reject(fn
+        <<"http", _rest::binary>> -> true
+        <<"(http", _rest::binary>> -> true
+        _ -> false
+      end)
+      |> Enum.uniq()
+
+    %{record | nameservers: nameservers, status: status}
   end
 
   defp parse_dt(string) do

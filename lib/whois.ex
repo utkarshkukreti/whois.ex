@@ -34,9 +34,6 @@ defmodule Whois do
             nil ->
               {:ok, raw}
 
-            "" ->
-              {:ok, raw}
-
             ^host ->
               {:ok, raw}
 

@@ -1,7 +1,13 @@
 defmodule Whois.Server do
+  @moduledoc false
   defstruct [:host]
 
   @type t :: %__MODULE__{host: String.t()}
+
+  @overrides Map.new(
+               %{"africa" => "whois.nic.africa"},
+               fn {tld, host} -> {tld, %{__struct__: __MODULE__, host: host}} end
+             )
 
   @all File.read!(Application.app_dir(:whois, "priv/tld.csv"))
        |> String.trim()
@@ -11,13 +17,24 @@ defmodule Whois.Server do
          {tld, %{__struct__: __MODULE__, host: host}}
        end)
        |> Map.new()
+       |> Map.merge(@overrides)
 
+  @doc """
+  A map from TLD to the WHOIS server we'll query by default.
+  """
   @spec all :: map
   def all, do: @all
 
-  @spec for(String.t()) :: {:ok, t} | :error
+  @spec for(String.t()) :: {:ok, t} | {:error, :unsupported_tld}
   def for(domain) do
-    [_, tld] = String.split(domain, ".", parts: 2)
-    Map.fetch(@all, tld)
+    tld =
+      domain
+      |> String.split(".")
+      |> List.last()
+
+    case @all[tld] do
+      nil -> {:error, :unsupported_tld}
+      server -> {:ok, server}
+    end
   end
 end

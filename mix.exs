@@ -7,7 +7,7 @@ defmodule Whois.Mixfile do
   def project do
     [
       app: :whois,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.12",
       consolidate_protocols: Mix.env() != :test,
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -73,7 +73,7 @@ defmodule Whois.Mixfile do
       maintainers: ["Utkarsh Kukreti", "Tyler Young"],
       licenses: ["MIT"],
       links: %{GitHub: @source_url},
-      files: ["lib", "mix.exs", "README.md", "CHANGELOG.md"]
+      files: ["lib", "mix.exs", "README.md", "CHANGELOG.md", "priv/tld.csv"]
     ]
   end
 

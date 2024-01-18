@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.1
+
+Super embarrassing compilation fix. 👀
+
 ## v0.2.0
 
 After a couple years of remaining static, v0.2.0 modernizes the dependencies and bumps the minimum supported Elixir version to Elixir 1.12.

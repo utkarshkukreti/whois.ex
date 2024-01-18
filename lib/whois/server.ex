@@ -1,5 +1,7 @@
 defmodule Whois.Server do
-  @moduledoc false
+  @moduledoc """
+  A server we can direct WHOIS requests to.
+  """
   defstruct [:host]
 
   @type t :: %__MODULE__{host: String.t()}

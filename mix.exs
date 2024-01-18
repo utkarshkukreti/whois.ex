@@ -1,6 +1,8 @@
 defmodule Whois.Mixfile do
   use Mix.Project
 
+  @source_url "https://github.com/utkarshkukreti/whois.ex"
+
   @spec project() :: Keyword.t()
   def project do
     [
@@ -22,6 +24,8 @@ defmodule Whois.Mixfile do
         "coveralls.html": :test,
         dialyzer: :dev
       ],
+      docs: docs(),
+      name: "Whois",
       description: "Pure Elixir WHOIS client and parser.",
       package: package(),
       dialyzer: [
@@ -66,9 +70,10 @@ defmodule Whois.Mixfile do
 
   defp package do
     [
-      maintainers: ["Utkarsh Kukreti"],
+      maintainers: ["Utkarsh Kukreti", "Tyler Young"],
       licenses: ["MIT"],
-      links: %{GitHub: "https://github.com/utkarshkukreti/whois.ex"}
+      links: %{GitHub: @source_url},
+      files: ["lib", "mix.exs", "README.md", "CHANGELOG.md"]
     ]
   end
 
@@ -84,6 +89,15 @@ defmodule Whois.Mixfile do
         "check.dialyzer"
       ],
       "check.dialyzer": "cmd MIX_ENV=dev mix dialyzer"
+    ]
+  end
+
+  defp docs do
+    [
+      extras: ["CHANGELOG.md", "README.md"],
+      main: "readme",
+      source_url: @source_url,
+      formatters: ["html"]
     ]
   end
 end

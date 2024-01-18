@@ -11,6 +11,12 @@ defmodule Whois do
   @doc """
   Queries the appropriate WHOIS server for the domain.
 
+  The domain must be *just* a domain, without any subdomain, protocol or path.
+  For instance, `"google.com"` is correct, but not `"www.google.com"` or
+  `https://google.com`. (If you have a URL, you can use the
+  [domainatrex](https://github.com/zensavona/domainatrex) library to extract just the
+  domain.)
+
   Returns `{:ok, record}` if we were able to look up WHOIS records (at the minimum,
   the date the domain was registered).
 

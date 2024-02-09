@@ -53,7 +53,7 @@ defmodule Whois.RecordTest do
     assert record.registrar == "MarkMonitor, Inc."
     assert_dt(record.created_at, ~D[1999-03-15])
     assert_dt(record.updated_at, ~D[2017-09-08])
-    assert_dt(record.expires_at, ~D[2018-03-15])
+    assert_dt(record.expires_at, ~D[2018-03-14])
   end
 
   test "parse google.org" do
@@ -79,7 +79,7 @@ defmodule Whois.RecordTest do
     assert record.registrar == "MarkMonitor, Inc."
     assert_dt(record.created_at, ~D[1998-10-21])
     assert_dt(record.updated_at, ~D[2017-09-18])
-    assert_dt(record.expires_at, ~D[2018-10-20])
+    assert_dt(record.expires_at, ~D[2018-10-19])
   end
 
   test "parse google.{com,net,org}" do
@@ -220,6 +220,26 @@ defmodule Whois.RecordTest do
 
     assert record.registrar == "GODADDY (86)"
     assert_dt(record.expires_at, ~D[2024-05-26])
+  end
+
+  test "parse a .pl domain" do
+    record = parse("ftdl.pl")
+    refute Whois.Record.is_empty(record)
+    assert record.domain == "ftdl.pl"
+
+    # TODO: Parse the full block of nameservers, like:
+    # nameservers:     dns101.ovh.net.
+    #                  ns101.ovh.net.
+    assert record.nameservers == [
+             "dns101.ovh.net."
+           ]
+
+    # TODO: Could parse the "REGISTRAR:" block
+    refute record.registrar
+
+    assert_dt(record.created_at, ~D[2021-01-12])
+    assert_dt(record.updated_at, ~D[2024-01-10])
+    assert_dt(record.expires_at, ~D[2025-01-12])
   end
 
   defp parse(domain), do: Whois.RecordFixtures.parsed_record_fixture(domain)

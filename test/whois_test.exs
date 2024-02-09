@@ -78,6 +78,16 @@ defmodule WhoisTest do
     assert %NaiveDateTime{} = record.expires_at
   end
 
+  @tag :live
+  test "lookup/1 can deal with domains that incorrectly point to fake WHOIS servers" do
+    assert {:ok, record} = Whois.lookup("storehub.io", recv_timeout: 5_000)
+    assert record.domain == "storehub.io"
+    assert record.registrar == "Pair Domains"
+    assert record.created_at == ~N[2019-09-12 10:17:27]
+    assert %NaiveDateTime{} = record.updated_at
+    assert %NaiveDateTime{} = record.expires_at
+  end
+
   defp wait, do: Process.sleep(2500)
 end
 

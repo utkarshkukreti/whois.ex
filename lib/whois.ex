@@ -6,7 +6,13 @@ defmodule Whois do
   alias Whois.Record
   alias Whois.Server
 
-  @type lookup_option :: {:server, String.t() | Server.t()}
+  @type lookup_option ::
+          {:server, String.t() | Server.t()}
+          | {:connect_timeout, timeout()}
+          | {:recv_timeout, timeout()}
+
+  @default_connect_timeout :timer.seconds(10)
+  @default_recv_timeout :timer.seconds(10)
 
   @doc """
   Queries the appropriate WHOIS server for the domain.
@@ -31,6 +37,10 @@ defmodule Whois do
 
   - server: the WHOIS server to query. If not specified, we'll automatically
     choose the appropriate server.
+  - connect_timeout: milliseconds to wait for the WHOIS server to accept our connection.
+    Defaults to 10,000 ms (10 seconds).
+  - recv_timeout: milliseconds to wait for the WHOIS server to reply after connecting.
+    Defaults to 10,000 ms (10 seconds).
 
   ### Examples
 
@@ -61,11 +71,13 @@ defmodule Whois do
         :error -> Server.for(domain)
       end
 
+    timeout = Access.get(opts, :connect_timeout, @default_connect_timeout)
+
     with {:ok, %Server{host: host} = server} <- server,
          {:ok, socket} <-
-           :gen_tcp.connect(String.to_charlist(host), 43, [:binary, active: false]),
+           :gen_tcp.connect(String.to_charlist(host), 43, [:binary, active: false], timeout),
          :ok <- :gen_tcp.send(socket, [query(server, domain), "\r\n"]),
-         raw when is_binary(raw) <- recv(socket) do
+         raw when is_binary(raw) <- recv(socket, "", opts) do
       case next_server(raw) do
         nil ->
           {:ok, raw}
@@ -77,17 +89,39 @@ defmodule Whois do
           {:ok, raw}
 
         next ->
-          with {:ok, raw2} <- lookup_raw(domain, [{:server, next} | opts]) do
-            {:ok, raw <> raw2}
+          case lookup_raw(domain, [{:server, next} | opts]) do
+            {:ok, raw2} ->
+              {:ok, raw <> raw2}
+
+            {:error, :timed_out} ->
+              # Sometimes we get malformed WHOIS records where the record actually
+              # includes all the information that exists, but incorrectly also
+              # points to a Registrar WHOIS Server that just doesn't respond.
+              # In these cases, if the record we received actually does belong to
+              # the domain, we'll just return what we've got.
+              if String.contains?(raw, domain) do
+                {:ok, raw}
+              else
+                {:error, :timed_out}
+              end
+
+            error ->
+              error
           end
       end
+    else
+      {:error, :timeout} -> {:error, :timed_out}
+      error -> error
     end
   end
 
-  @spec recv(socket :: :gen_tcp.socket(), acc :: String.t()) :: String.t() | {:error, :timed_out}
-  defp recv(socket, acc \\ "") do
-    case :gen_tcp.recv(socket, 0) do
-      {:ok, data} -> recv(socket, acc <> data)
+  @spec recv(socket :: :gen_tcp.socket(), acc :: String.t(), [lookup_option()]) ::
+          String.t() | {:error, :timed_out}
+  defp recv(socket, acc, opts) do
+    timeout = Access.get(opts, :recv_timeout, @default_recv_timeout)
+
+    case :gen_tcp.recv(socket, 0, timeout) do
+      {:ok, data} -> recv(socket, acc <> data, opts)
       {:error, :etimedout} -> {:error, :timed_out}
       {:error, :closed} -> acc
     end
@@ -95,8 +129,8 @@ defmodule Whois do
 
   # Denic.de says:
   #
-  # > To query the status of a domain, please use whois.denic – to query the technical data and 
-  # > the date of the last change to the domain data please use 
+  # > To query the status of a domain, please use whois.denic – to query the technical data and
+  # > the date of the last change to the domain data please use
   # > "whois -h whois.denic.de -T dn <domain.de>".
   #
   # https://www.denic.de/en/service/whois-service/

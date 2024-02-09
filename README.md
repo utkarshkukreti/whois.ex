@@ -26,6 +26,7 @@ domains, including but not limited to:
 - `.im`
 - `.lv`
 - `.no`
+- `.pl`
 - `.se`
 - `.ua`
 

@@ -62,7 +62,7 @@ defmodule Whois.Record do
               n when n in ["domain name", "domain"] ->
                 %{record | domain: String.downcase(value)}
 
-              ns when ns in ["name server", "nserver"] ->
+              ns when ns in ["name server", "nserver", "nameservers"] ->
                 %{record | nameservers: record.nameservers ++ [value]}
 
               s when s in ["domain status", "status"] ->
@@ -88,7 +88,15 @@ defmodule Whois.Record do
                    ] ->
                 %{record | updated_at: parse_dt(value) || record.updated_at}
 
-              e when e in ["expiration date", "expires", "registry expiry date", "expiry date"] ->
+              e
+              when e in [
+                     "expiration date",
+                     "expires",
+                     "registry expiry date",
+                     "expiry date",
+                     "renewal date",
+                     "registrar registration expiration date"
+                   ] ->
                 %{record | expires_at: parse_dt(value) || record.expires_at}
 
               "registrant " <> name ->

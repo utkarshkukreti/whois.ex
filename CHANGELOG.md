@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.3.0
+
+- Add support for custom timeouts via the `:connect_timeout` and `:recv_timeout`
+  options to `Whois.lookup/1` ([#15](https://github.com/utkarshkukreti/whois.ex/pull/15))
+- Correctly fall back to the last best record for domains whose registrar 
+  includes a bogus terminating WHOIS server (like `pairdomains.com`) ([#15](https://github.com/utkarshkukreti/whois.ex/pull/15))
+- Add support for `.pl` domains ([#16](https://github.com/utkarshkukreti/whois.ex/pull/16))
+
+
 ## v0.2.1
 
 Super embarrassing compilation fix. 👀

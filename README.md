@@ -57,7 +57,7 @@ Add whois to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:whois, "~> 0.2"},
+    {:whois, "~> 0.3"},
   ]
 end
 ```

@@ -88,6 +88,11 @@ defmodule WhoisTest do
     assert %NaiveDateTime{} = record.expires_at
   end
 
+  @tag :live
+  test "lookup/1 handles timeouts" do
+    assert {:error, :timed_out} = Whois.lookup("google.com", recv_timeout: 0)
+  end
+
   defp wait, do: Process.sleep(2500)
 end
 

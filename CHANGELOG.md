@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1
+
+- Fix crash when TCP receive times out (`Whois.lookup/2` now correctly returns `{:error, :timed_out}`)
+
 ## v0.3.0
 
 - Add support for custom timeouts via the `:connect_timeout` and `:recv_timeout`

@@ -122,7 +122,7 @@ defmodule Whois do
 
     case :gen_tcp.recv(socket, 0, timeout) do
       {:ok, data} -> recv(socket, acc <> data, opts)
-      {:error, :etimedout} -> {:error, :timed_out}
+      {:error, timeout} when timeout in [:etimedout, :timeout] -> {:error, :timed_out}
       {:error, :closed} -> acc
     end
   end

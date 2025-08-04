@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.3.2
+
+### Bug fixes
+* [fix .me issue](https://github.com/utkarshkukreti/whois.ex/pull/45) by new contributor @manuel-rubio
+* [Update registry for .in domains](https://github.com/utkarshkukreti/whois.ex/pull/58) by new contributor @ssinghi
+
+### Dependency bumps and housekeeping
+- Credo 1.7.7 -> 1.7.12
+- Dialyxir 1.4.3 -> 1.4.5
+- Patch 0.13.1 -> 0.16.0
+- ExDoc 0.34.2 -> 0.38.2
+- ExCoveralls 0.18.3 -> 0.18.5
+- DateTimeParser 1.2.0 -> 1.2.1
+* Remove CI for old Elixir versions, since Ubuntu 20.04 is no longer supported in GitHub Actions by @s3cur3 in https://github.com/utkarshkukreti/whois.ex/pull/53
+
 ## v0.3.1
 
 - Fix crash when TCP receive times out (`Whois.lookup/2` now correctly returns `{:error, :timed_out}`)

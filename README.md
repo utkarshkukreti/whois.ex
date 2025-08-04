@@ -151,3 +151,11 @@ make clean
 make tld.json
 make tld.csv
 ```
+
+### Cutting a release
+
+1. Update `mix.exs`
+2. Update the version in the `README.md` (if applicable)
+3. Update the `CHANGELOG.md` with release notes
+4. Use the GitHub UI to [tag a new release with those release notes](https://github.com/utkarshkukreti/whois.ex/releases/new)
+5. Run `mix hex.publish`

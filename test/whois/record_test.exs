@@ -292,10 +292,9 @@ defmodule Whois.RecordTest do
 
     assert record.registrar =~ "Squarespace Domains LLC [Tag = GOOGLE]"
 
-    # TODO: Make DateTimeParser handle the `14-Jul-2023` format
-    # assert_dt(record.created_at, ~D[2007-07-13])
-    # assert_dt(record.updated_at, ~D[2023-07-14])
-    # assert_dt(record.expires_at, ~D[2024-07-13])
+    assert_dt(record.created_at, ~D[2007-07-13])
+    assert_dt(record.updated_at, ~D[2023-07-14])
+    assert_dt(record.expires_at, ~D[2024-07-13])
   end
 
   defp parse(domain), do: Whois.RecordFixtures.parsed_record_fixture(domain)

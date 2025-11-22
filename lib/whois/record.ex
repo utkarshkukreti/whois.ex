@@ -239,7 +239,7 @@ defmodule Whois.Record do
   end
 
   defp guess_date(string) do
-    case DateTimeParser.parse_datetime(string) do
+    case DateTimeParser.parse_datetime(string, assume_time: true) do
       {:ok, %NaiveDateTime{} = naive} ->
         naive
 

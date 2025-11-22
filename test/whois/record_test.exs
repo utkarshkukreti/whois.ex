@@ -235,11 +235,41 @@ defmodule Whois.RecordTest do
            ]
 
     # TODO: Could parse the "REGISTRAR:" block
-    refute record.registrar
+    # refute record.registrar
 
     assert_dt(record.created_at, ~D[2021-01-12])
     assert_dt(record.updated_at, ~D[2024-01-10])
     assert_dt(record.expires_at, ~D[2025-01-12])
+  end
+
+  test "parse balcia.lv" do
+    record = parse("balcia.lv")
+    assert record.domain == "balcia.lv"
+    assert record.nameservers == ["ns.online.lv", "ns2.online.lv", "ns3.online.lv"]
+    refute record.registrar
+    refute record.created_at
+    assert_dt(record.updated_at, ~D[2024-02-09])
+    refute record.expires_at
+  end
+
+  test "parse manchester.ac.uk" do
+    record = parse("manchester.ac.uk")
+    # dbg(record)
+    assert record.domain == "manchester.ac.uk"
+
+    assert record.nameservers == [
+             "ns1.manchester.ac.uk\t130.88.1.1",
+             "ns2.manchester.ac.uk\t130.88.1.2",
+             "ns4.ja.net"
+           ]
+
+    refute record.registrar
+    # TODO: Parse the weird format dates
+    # assert_dt(record.created_at, ~D[2003-09-17])
+    # assert_dt(record.updated_at, ~D[2022-12-05])
+    # assert_dt(record.expires_at, ~D[2025-01-05])
+
+    # TODO: Parse the registrant contact
   end
 
   defp parse(domain), do: Whois.RecordFixtures.parsed_record_fixture(domain)

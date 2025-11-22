@@ -52,70 +52,11 @@ defmodule Whois.Record do
       }
     }
 
-    record =
+    {record, _last_continuation_header} =
       raw
       |> String.split("\n")
-      |> Enum.reduce(record, fn line, record ->
-        case split_key_and_value(line) do
-          {key, value} ->
-            case String.downcase(key) do
-              n when n in ["domain name", "domain"] ->
-                %{record | domain: String.downcase(value)}
-
-              ns when ns in ["name server", "nserver", "nameservers"] ->
-                %{record | nameservers: record.nameservers ++ [value]}
-
-              s when s in ["domain status", "status"] ->
-                %{record | status: record.status ++ [value]}
-
-              r when r in ["registrar", "registrar handle", "registrar name", "provider"] ->
-                %{record | registrar: value}
-
-              "sponsoring registrar" ->
-                %{record | registrar: value}
-
-              c when c in ["creation date", "created"] ->
-                %{record | created_at: parse_dt(value) || record.created_at}
-
-              u
-              when u in [
-                     "updated",
-                     "updated date",
-                     "modified",
-                     "last updated",
-                     "changed",
-                     "last modified"
-                   ] ->
-                %{record | updated_at: parse_dt(value) || record.updated_at}
-
-              e
-              when e in [
-                     "expiration date",
-                     "expires",
-                     "registry expiry date",
-                     "expiry date",
-                     "renewal date",
-                     "registrar registration expiration date"
-                   ] ->
-                %{record | expires_at: parse_dt(value) || record.expires_at}
-
-              "registrant " <> name ->
-                update_in(record.contacts.registrant, &parse_contact(&1, name, value))
-
-              "admin " <> name ->
-                update_in(record.contacts.administrator, &parse_contact(&1, name, value))
-
-              "tech " <> name ->
-                update_in(record.contacts.technical, &parse_contact(&1, name, value))
-
-              _ ->
-                record
-            end
-
-          _ ->
-            record
-        end
-      end)
+      |> Enum.map(&String.trim/1)
+      |> Enum.reduce({record, nil}, &apply_line/2)
 
     nameservers =
       record.nameservers
@@ -135,6 +76,108 @@ defmodule Whois.Record do
 
     %{record | nameservers: nameservers, status: status}
   end
+
+  defp apply_line("", {%__MODULE__{} = record, _}), do: {record, nil}
+
+  defp apply_line(line, {%__MODULE__{} = record, last_continuation_header})
+       when is_binary(line) do
+    case split_key_and_value(line) do
+      {key, value} ->
+        case apply_key_value(record, String.downcase(key), value) do
+          {:ok, updated_record} ->
+            {updated_record, nil}
+
+          :error ->
+            {record, last_continuation_header}
+        end
+
+      _unsplittable_line ->
+        case apply_key_value(record, last_continuation_header, line) do
+          {:ok, updated_record} ->
+            {updated_record, last_continuation_header}
+
+          :error ->
+            if String.ends_with?(line, ":") do
+              continuation_header =
+                line
+                |> String.split(":", parts: 2)
+                |> List.first()
+                |> String.trim()
+                |> String.downcase()
+
+              {record, continuation_header}
+            else
+              {record, nil}
+            end
+        end
+    end
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, n, value) when n in ["domain name", "domain"] do
+    {:ok, %{record | domain: String.downcase(value)}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, ns, value)
+       when ns in ["name server", "nserver", "nameservers", "servers"] do
+    {:ok, %{record | nameservers: record.nameservers ++ [value]}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, s, value) when s in ["domain status", "status"] do
+    {:ok, %{record | status: record.status ++ [value]}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, r, value)
+       when r in ["registrar", "registrar handle", "registrar name", "provider"] do
+    {:ok, %{record | registrar: value}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, "sponsoring registrar", value) do
+    {:ok, %{record | registrar: value}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, c, value)
+       when c in ["creation date", "created", "entry created"] do
+    {:ok, %{record | created_at: parse_dt(value) || record.created_at}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, u, value)
+       when u in [
+              "updated",
+              "updated date",
+              "modified",
+              "last updated",
+              "changed",
+              "last modified",
+              "entry updated"
+            ] do
+    {:ok, %{record | updated_at: parse_dt(value) || record.updated_at}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, e, value)
+       when e in [
+              "expiration date",
+              "expires",
+              "registry expiry date",
+              "expiry date",
+              "renewal date",
+              "registrar registration expiration date"
+            ] do
+    {:ok, %{record | expires_at: parse_dt(value) || record.expires_at}}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, "registrant " <> name, value) do
+    {:ok, update_in(record.contacts.registrant, &parse_contact(&1, name, value))}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, "admin " <> name, value) do
+    {:ok, update_in(record.contacts.administrator, &parse_contact(&1, name, value))}
+  end
+
+  defp apply_key_value(%__MODULE__{} = record, "tech " <> name, value) do
+    {:ok, update_in(record.contacts.technical, &parse_contact(&1, name, value))}
+  end
+
+  defp apply_key_value(_record, _key, _value), do: :error
 
   defp split_key_and_value(line) do
     line
@@ -220,10 +263,10 @@ defmodule Whois.Record do
         _ -> nil
       end
 
-    if key do
-      %{contact | key => value}
-    else
+    if is_nil(key) do
       contact
+    else
+      Map.put(contact, key, value)
     end
   end
 end

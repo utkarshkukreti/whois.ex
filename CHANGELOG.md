@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.4.0
+
+### Features
+
+* [Update TLD server database](https://github.com/utkarshkukreti/whois.ex/pull/67)
+* [Support parsing .ac.uk domains](https://github.com/utkarshkukreti/whois.ex/pull/68)
+
+### Dependency bumps
+
+* Credo 1.7.12 -> 1.7.13
+* ExDoc 0.38.2 -> 0.39.1
+* Dialyxir 1.4.5 -> 1.4.7
+
 ## v0.3.2
 
 ### Bug fixes

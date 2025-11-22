@@ -275,6 +275,29 @@ defmodule Whois.RecordTest do
     # assert_dt(record.expires_at, ~D[2025-01-05])
   end
 
+  test "parse a wikijob.co.uk" do
+    record = parse("wikijob.co.uk")
+    assert record.domain == "wikijob.co.uk"
+
+    assert record.nameservers == [
+             "dns1.nic.uk 213.248.216.1 2a01:618:400:0:0:0:0:1",
+             "dns2.nic.uk 103.49.80.1 2401:fd80:400:0:0:0:0:1",
+             "dns3.nic.uk 213.248.220.1 2a01:618:404:0:0:0:0:1",
+             "dns4.nic.uk 2401:fd80:404:0:0:0:0:1 43.230.48.1",
+             "nsa.nic.uk 156.154.100.3 2001:502:ad09:0:0:0:0:3",
+             "nsb.nic.uk 156.154.101.3 2001:502:2eda:0:0:0:0:3",
+             "nsc.nic.uk 156.154.102.3 2610:a1:1009:0:0:0:0:3",
+             "nsd.nic.uk 156.154.103.3 2610:a1:1010:0:0:0:0:3"
+           ]
+
+    assert record.registrar =~ "Squarespace Domains LLC [Tag = GOOGLE]"
+
+    # TODO: Make DateTimeParser handle the `14-Jul-2023` format
+    # assert_dt(record.created_at, ~D[2007-07-13])
+    # assert_dt(record.updated_at, ~D[2023-07-14])
+    # assert_dt(record.expires_at, ~D[2024-07-13])
+  end
+
   defp parse(domain), do: Whois.RecordFixtures.parsed_record_fixture(domain)
 
   defp assert_dt(%NaiveDateTime{} = datetime, date) do

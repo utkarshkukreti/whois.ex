@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.1
+
+Bug fix: [Improve support for oddly formatted dates](https://github.com/utkarshkukreti/whois.ex/pull/70)
+
 ## v0.4.0
 
 ### Features

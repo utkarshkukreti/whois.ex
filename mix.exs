@@ -7,7 +7,7 @@ defmodule Whois.Mixfile do
   def project do
     [
       app: :whois,
-      version: "0.3.2",
+      version: "0.4.0",
       elixir: "~> 1.12",
       consolidate_protocols: Mix.env() != :test,
       elixirc_paths: elixirc_paths(Mix.env()),

@@ -136,7 +136,7 @@ defmodule Whois.Record do
   end
 
   defp apply_key_value(%__MODULE__{} = record, c, value)
-       when c in ["creation date", "created", "entry created"] do
+       when c in ["creation date", "created", "entry created", "registered on"] do
     {:ok, %{record | created_at: parse_dt(value) || record.created_at}}
   end
 

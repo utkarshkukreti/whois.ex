@@ -128,7 +128,7 @@ defmodule Whois.Record do
 
   defp apply_key_value(%__MODULE__{} = record, r, value)
        when r in ["registrar", "registrar handle", "registrar name", "provider"] do
-    {:ok, %{record | registrar: value}}
+    {:ok, %{record | registrar: append_line(record.registrar, value)}}
   end
 
   defp apply_key_value(%__MODULE__{} = record, "sponsoring registrar", value) do
@@ -178,6 +178,13 @@ defmodule Whois.Record do
   end
 
   defp apply_key_value(_record, _key, _value), do: :error
+
+  defp append_line(nil, new_value), do: new_value
+  defp append_line(same_value, same_value), do: same_value
+
+  defp append_line(existing_value, new_value) when is_binary(existing_value) do
+    "#{existing_value}\n#{new_value}"
+  end
 
   defp split_key_and_value(line) do
     line
